@@ -189,12 +189,24 @@ const SUSPICIOUS_PATTERNS = [
   '../','..\\','<script','javascript:',
   'UNION SELECT','DROP TABLE','${','#{',
   '/etc/passwd','/etc/shadow','cmd.exe','powershell',
-  'eval(','exec(','__proto__',
+  'eval(','__proto__',
 ];
 
+function extractStringValues(obj, depth) {
+  if (depth === undefined) depth = 0;
+  if (depth > 4) return '';
+  if (typeof obj === 'string') return obj;
+  if (typeof obj !== 'object' || obj === null) return '';
+  return Object.values(obj).map(function(v) { return extractStringValues(v, depth + 1); }).join(' ');
+}
+
 const securityLogger = (req, res, next) => {
-  const reqString = JSON.stringify({ url: req.url, body: req.body, query: req.query }).toLowerCase();
-  const threat = SUSPICIOUS_PATTERNS.find(s => reqString.includes(s.toLowerCase()));
+  const toScan = [
+    req.url,
+    extractStringValues(req.query),
+    extractStringValues(req.body),
+  ].join(' ').toLowerCase();
+  const threat = SUSPICIOUS_PATTERNS.find(s => toScan.includes(s.toLowerCase()));
   if (threat) {
     logger.warn({ event: 'security_threat', ip: req.ip, url: req.url, pattern: threat });
     return res.status(400).json({ error: 'Requête suspecte bloquée' });
@@ -275,4 +287,3 @@ module.exports = {
   securityLogger, preventPathTraversal, requestSizeLimits, validateJWT,
   preventPrototypePollution, blockMaliciousBots,
 };
-  
