@@ -1,0 +1,3249 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MichiNo- | Admin Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #080808;
+      --surface: #111111;
+      --surface2: #1a1a1a;
+      --accent: #ff3e00;
+      --accent2: #ff8c00;
+      --text: #f0f0f0;
+      --muted: #888;
+      --border: #222;
+      --success: #00cc66;
+      --error: #ff4444;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: var(--bg); color: var(--text); font-family: 'Rajdhani', sans-serif; min-height: 100vh; }
+
+    /* LOGIN */
+    .login-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(ellipse at center, #1a0800 0%, #080808 70%);
+    }
+    .login-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--accent);
+      border-radius: 16px;
+      padding: 40px;
+      width: 90%;
+      max-width: 400px;
+    }
+    .login-logo {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 3rem;
+      background: linear-gradient(135deg, #ff3e00, #ff8c00);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .login-sub { text-align: center; color: var(--muted); margin-bottom: 30px; letter-spacing: 2px; font-size: 0.9rem; text-transform: uppercase; }
+
+    /* FORMS */
+    .form-group { margin-bottom: 16px; }
+    label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+    input, select, textarea {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      color: var(--text);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+    textarea { resize: vertical; min-height: 80px; }
+
+    .btn {
+      width: 100%;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 14px;
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1.2rem;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn:hover { background: #cc3200; }
+    .btn:disabled { background: var(--border); cursor: not-allowed; }
+    .btn-secondary {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .btn-secondary:hover { border-color: var(--accent); background: var(--surface2); }
+    .btn-danger { background: var(--error); }
+    .btn-danger:hover { background: #cc0000; }
+
+    /* DASHBOARD */
+    .dashboard { display: none; }
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 220px;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 20px 0;
+      z-index: 100;
+    }
+    .sidebar-logo {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1.8rem;
+      background: linear-gradient(135deg, #ff3e00, #ff8c00);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      padding: 0 20px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .sidebar-logo span { display: block; font-family: 'Rajdhani', sans-serif; font-size: 0.7rem; color: var(--muted); -webkit-text-fill-color: var(--muted); letter-spacing: 2px; }
+    .sidebar-menu { padding: 16px 0; }
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      cursor: pointer;
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.2s;
+      border-left: 3px solid transparent;
+    }
+    .menu-item:hover, .menu-item.active {
+      color: var(--text);
+      background: var(--surface2);
+      border-left-color: var(--accent);
+    }
+    .menu-item .icon { font-size: 1.2rem; }
+
+    .main-content {
+      margin-left: 220px;
+      padding: 30px;
+      min-height: 100vh;
+    }
+    .page-title {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 2.2rem;
+      color: var(--accent);
+      letter-spacing: 3px;
+      margin-bottom: 24px;
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .panel-title {
+      font-family: 'Bebas Neue', cursive;
+      font-size: 1.3rem;
+      color: var(--accent2);
+      letter-spacing: 2px;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* TOGGLE */
+    .toggle-group {
+      display: flex;
+      background: var(--surface2);
+      border-radius: 8px;
+      padding: 4px;
+      margin-bottom: 16px;
+      gap: 4px;
+    }
+    .toggle-btn {
+      flex: 1;
+      padding: 8px;
+      border: none;
+      border-radius: 6px;
+      background: none;
+      color: var(--muted);
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .toggle-btn.active { background: var(--accent); color: white; }
+
+    /* ALERT */
+    .alert {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-weight: 600;
+      display: none;
+    }
+    .alert.success { background: rgba(0,204,102,0.15); border: 1px solid var(--success); color: var(--success); display: block; }
+    .alert.error { background: rgba(255,68,68,0.15); border: 1px solid var(--error); color: var(--error); display: block; }
+
+    /* STATS */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 16px;
+      margin-bottom: 30px;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+    }
+    .stat-number { font-family: 'Bebas Neue', cursive; font-size: 2.5rem; color: var(--accent); }
+    .stat-label { color: var(--muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
+
+    /* CONTENT LIST */
+    .content-list { }
+    .content-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: var(--surface2);
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+    .content-item img, .content-thumb {
+      width: 48px;
+      height: 48px;
+      border-radius: 6px;
+      object-fit: cover;
+      background: var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+    .content-info { flex: 1 }
+    .content-title { font-weight: 700; }
+    .content-meta { color: var(--muted); font-size: 0.85rem; }
+    .content-actions { display: flex; gap: 8px; }
+    .btn-small {
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: none;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+
+    /* IMAGE GEN */
+    .img-result {
+      margin-top: 16px;
+      border-radius: 8px;
+      overflow: hidden;
+      display: none;
+    }
+    .img-result img { width: 100%; border-radius: 8px; }
+
+    /* PROGRESS */
+    .upload-progress {
+      height: 6px;
+      background: var(--border);
+      border-radius: 3px;
+      margin-top: 8px;
+      display: none;
+    }
+    .upload-progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 3px;
+      width: 0%;
+      transition: width 0.3s;
+    }
+    .preset-chip {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 5px 10px;
+      border-radius: 16px;
+      cursor: pointer;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .preset-chip:hover { background: var(--accent); border-color: var(--accent); color: white; }
+    .history-thumb {
+      width: 60px; height: 60px;
+      border-radius: 8px;
+      object-fit: cover;
+      cursor: pointer;
+      border: 2px solid var(--border);
+      transition: border-color 0.2s;
+    }
+    .history-thumb:hover { border-color: var(--accent); }
+
+    /* THEME CUSTOMIZER */
+    .color-row { display:flex; flex-wrap:wrap; gap:12px; margin-bottom:8px; }
+    .color-item { display:flex; flex-direction:column; align-items:center; gap:6px; }
+    .color-swatch {
+      width:50px; height:50px; border-radius:10px;
+      border:3px solid var(--border); cursor:pointer;
+      position:relative; overflow:hidden; transition:border-color 0.2s;
+    }
+    .color-swatch:hover { border-color:var(--accent2); }
+    .color-swatch input[type=color] {
+      position:absolute; inset:-6px; width:calc(100%+12px); height:calc(100%+12px);
+      border:none; padding:0; cursor:pointer; opacity:0;
+    }
+    .color-dot {
+      width:100%; height:100%;
+      pointer-events:none;
+    }
+    .color-label { font-size:0.72rem; color:var(--muted); text-align:center; text-transform:uppercase; letter-spacing:0.5px; max-width:60px; }
+
+    .theme-preset-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:10px; }
+    .theme-preset-card {
+      border-radius:10px; overflow:hidden; cursor:pointer;
+      border:2px solid var(--border); transition:border-color 0.2s; position:relative;
+    }
+    .theme-preset-card:hover { border-color:var(--accent); }
+    .theme-preset-card.active { border-color:var(--green); }
+    .theme-preview-bar { height:14px; }
+    .theme-preview-body { padding:8px 10px; background:inherit; }
+    .theme-preview-title { font-family:'Bebas Neue',cursive; font-size:0.85rem; letter-spacing:1px; }
+    .theme-preview-sub { font-size:0.7rem; color:var(--muted); }
+
+    .bg-options { display:grid; grid-template-columns:repeat(auto-fill,minmax(100px,1fr)); gap:10px; }
+    .bg-option {
+      aspect-ratio:16/9; border-radius:8px; overflow:hidden; cursor:pointer;
+      border:2px solid var(--border); transition:border-color 0.2s; position:relative;
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.5rem; background:var(--surface2);
+    }
+    .bg-option:hover { border-color:var(--accent); }
+    .bg-option.active { border-color:var(--green); }
+    .bg-option span { position:absolute; bottom:4px; left:0; right:0; text-align:center; font-size:0.65rem; color:rgba(255,255,255,0.7); text-transform:uppercase; letter-spacing:1px; }
+
+    .font-option {
+      padding:10px 14px; border-radius:8px; border:2px solid var(--border);
+      background:var(--surface2); cursor:pointer; transition:border-color 0.2s;
+      text-align:center;
+    }
+    .font-option:hover { border-color:var(--accent); }
+    .font-option.active { border-color:var(--green); }
+    .font-option .name { font-size:1.2rem; }
+    .font-option .sample { font-size:0.7rem; color:var(--muted); margin-top:2px; }
+
+    .live-preview-frame {
+      width:100%; aspect-ratio:16/9; border-radius:12px; overflow:hidden;
+      border:2px solid var(--border); position:relative; background:#000;
+    }
+    .preview-mini-header {
+      height:36px; display:flex; align-items:center; padding:0 12px;
+      justify-content:space-between;
+    }
+    .preview-mini-logo { font-family:'Bebas Neue',cursive; font-size:1.3rem; }
+    .preview-mini-search { height:20px; width:100px; border-radius:10px; }
+    .preview-mini-body { padding:10px 12px; }
+    .preview-mini-section { font-family:'Bebas Neue',cursive; font-size:0.75rem; letter-spacing:2px; margin-bottom:6px; }
+    .preview-mini-cards { display:flex; gap:6px; }
+    .preview-mini-card { width:50px; height:50px; border-radius:6px; }
+
+    .slider-row { display:flex; align-items:center; gap:12px; margin-bottom:10px; }
+    .slider-row label { color:var(--muted); font-size:0.85rem; text-transform:uppercase; letter-spacing:1px; width:100px; flex-shrink:0; }
+    .slider-row input[type=range] { flex:1; }
+    .slider-row span { font-family:'Bebas Neue',cursive; font-size:1rem; color:var(--text); width:40px; text-align:right; }
+
+    .platform-badge {
+      display: inline-flex; align-items: center; gap: 3px;
+      padding: 3px 10px; border-radius: 20px;
+      font-size: 0.72rem; font-weight: 700; color: white;
+      letter-spacing: 0.5px; opacity: 0.85;
+    }
+    .platform-badge:hover { opacity: 1; }
+    @keyframes scanPulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(255,140,0,0.4); }
+      50%      { box-shadow: 0 0 0 8px rgba(255,140,0,0); }
+    }
+    #linkLoading .spin { animation: spin 1s linear infinite; display: inline-block; }
+
+    @media (max-width: 600px) {
+      .sidebar { display: none; }
+      .main-content { margin-left: 0; padding: 16px; }
+      .mobile-nav {
+        display: flex;
+        overflow-x: auto;
+        gap: 8px;
+        margin-bottom: 20px;
+        padding-bottom: 8px;
+      }
+    }
+  </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable.js/1.15.2/Sortable.min.js"></script>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">MichiNo-</div>
+    <div class="login-sub">Admin Dashboard</div>
+    <div class="alert" id="loginAlert"></div>
+    <div class="form-group">
+      <label>Nom d'utilisateur</label>
+      <input type="text" id="loginUser" placeholder="admin">
+    </div>
+    <div class="form-group">
+      <label>Mot de passe</label>
+      <input type="password" id="loginPass" placeholder="••••••••" onkeypress="if(event.key==='Enter')login()">
+    </div>
+    <button class="btn" onclick="login()">🔐 Se Connecter</button>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dashboard" id="dashboard">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-logo">MichiNo-<span>Admin Panel</span></div>
+    <div class="sidebar-menu">
+      <div class="menu-item active" onclick="showPage('home')"><span class="icon">🏠</span> Accueil</div>
+      <div class="menu-item" onclick="showPage('music')"><span class="icon">🎵</span> Musique</div>
+      <div class="menu-item" onclick="showPage('videos')"><span class="icon">🎬</span> Vidéos</div>
+      <div class="menu-item" onclick="showPage('imagegen')"><span class="icon">🎨</span> Génerer Image</div>
+      <div class="menu-item" onclick="showPage('theme')"><span class="icon">🎨</span> Thème du Site</div>
+      <div class="menu-item" onclick="showPage('chat')" id="chatMenuItem"><span class="icon">💬</span> Messages Chat <span id="chatUnreadBadge" style="display:none;background:#ff4444;color:#fff;border-radius:10px;padding:1px 7px;font-size:.72rem;font-weight:700;margin-left:4px">!</span></div>
+      <div class="menu-item" onclick="showPage('manage')"><span class="icon">📋</span> Gérer Contenu</div>
+      <div class="menu-item" onclick="showPage('analytics')"><span class="icon">📊</span> Analytics</div>
+      <div class="menu-item" onclick="showPage('notifications')"><span class="icon">🔔</span> Notifications</div>
+      <div class="menu-item" onclick="showPage('audit')"><span class="icon">🔍</span> Audit Log</div>
+      <div class="menu-item" onclick="showPage('subscribers')"><span class="icon">📧</span> Abonnés <span id="subCountBadge" style="font-size:.72rem;color:var(--accent2);margin-left:4px"></span></div>
+      <div class="menu-item" onclick="showPage('comments-admin')"><span class="icon">💬</span> Commentaires</div>
+      <div class="menu-item" onclick="showPage('push-admin')"><span class="icon">🔔</span> Notifications Push</div>
+      <a href="/mastering" target="_blank" style="text-decoration:none;color:inherit"><div class="menu-item"><span class="icon">🎚️</span> Studio Mastering</div></a>
+      <div class="menu-item" onclick="showPage('seo')"><span class="icon">📈</span> SEO Google</div>
+      <div class="menu-item" onclick="logout()" style="margin-top:auto;position:absolute;bottom:20px;width:100%"><span class="icon">🚪</span> Déconnexion</div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main-content">
+
+    <!-- MOBILE NAV -->
+    <div class="mobile-nav">
+      <button class="btn btn-secondary btn-small" onclick="showPage('home')">🏠 Home</button>
+      <button class="btn btn-secondary btn-small" onclick="showPage('music')">🎵 Music</button>
+      <button class="btn btn-secondary btn-small" onclick="showPage('videos')">🎬 Videos</button>
+      <button class="btn btn-secondary btn-small" onclick="showPage('imagegen')">🎨 Image</button>
+      <button class="btn btn-secondary btn-small" onclick="showPage('theme')">🎨 Thème</button>
+      <button class="btn btn-secondary btn-small" onclick="showPage('chat')">💬 Chat</button>
+      <button class="btn btn-secondary btn-small" onclick="showPage('manage')">📋 Gérer</button>
+      <button class="btn btn-secondary btn-small" onclick="showPage('seo')">📈 SEO</button>
+      <button class="btn btn-danger btn-small" onclick="logout()">🚪</button>
+    </div>
+
+    <!-- HOME PAGE -->
+    <div id="page-home">
+      <div class="page-title">Tableau de Bord</div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-number" id="statSongs">-</div>
+          <div class="stat-label">🎵 Chansons</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="statVideos">-</div>
+          <div class="stat-label">🎬 Vidéos</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="statDownloads">-</div>
+          <div class="stat-label">⬇ Téléchargements</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="statViews">-</div>
+          <div class="stat-label">👁 Vues</div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">🚀 Accès rapide</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px">
+          <button class="btn" onclick="showPage('music')">🎵 Ajouter Chanson</button>
+          <button class="btn btn-secondary" onclick="showPage('videos')">🎬 Ajouter Vidéo</button>
+          <button class="btn btn-secondary" onclick="showPage('imagegen')">🎨 Générer Image</button>
+          <a href="/" target="_blank"><button class="btn btn-secondary" style="width:100%">🌐 Voir le Site</button></a>
+        </div>
+      </div>
+    </div>
+
+    <!-- MUSIC PAGE -->
+    <div id="page-music" style="display:none">
+      <div class="page-title">🎵 Ajouter une Chanson</div>
+
+      <div class="panel">
+        <div class="panel-title">Type d'upload</div>
+        <div class="toggle-group">
+          <button class="toggle-btn active" onclick="setUploadType('song','local')">📁 Depuis PC</button>
+          <button class="toggle-btn" onclick="setUploadType('song','link')">🔗 Importer un lien</button>
+        </div>
+
+        <div class="alert" id="songAlert"></div>
+
+        <div class="form-group">
+          <label>Titre de la chanson *</label>
+          <input type="text" id="songTitle" placeholder="Ex: Ke Star">
+        </div>
+        <div class="form-group">
+          <label>Artiste *</label>
+          <input type="text" id="songArtist" placeholder="Ex: Focalistic">
+        </div>
+        <div class="form-group">
+          <label>Genre</label>
+          <select id="songGenre">
+            <option>Afrobeat</option>
+            <option>Amapiano</option>
+            <option>Afropop</option>
+            <option>Highlife</option>
+            <option>Bongo Flava</option>
+            <option>Gengetone</option>
+            <option>Afro-fusion</option>
+            <option>Gospel</option>
+            <option>Hip-Hop</option>
+            <option>R&B</option>
+          </select>
+        </div>
+
+        <!-- LOCAL UPLOAD -->
+        <div id="song-local">
+          <div class="form-group">
+            <label>Fichier Audio (MP3, WAV) *</label>
+            <input type="file" id="songFile" accept="audio/*">
+          </div>
+          <div class="form-group">
+            <label>Image de couverture</label>
+            <input type="file" id="songCover" accept="image/*">
+          </div>
+          <div class="upload-progress" id="songProgress">
+            <div class="upload-progress-fill" id="songProgressFill"></div>
+          </div>
+        </div>
+
+        <!-- IMPORT LIEN PLATEFORME -->
+        <div id="song-link" style="display:none">
+
+          <!-- Champ URL + bouton analyser -->
+          <div class="form-group">
+            <label>Lien de la plateforme *</label>
+            <div style="display:flex;gap:8px;align-items:stretch">
+              <input type="url" id="songLink"
+                placeholder="https://audiomack.com/... · boomplay · soundcloud · spotify · youtube..."
+                style="flex:1"
+                oninput="onLinkInput(this.value)">
+              <button id="btnAnalyze" class="btn" style="width:auto;padding:0 18px;white-space:nowrap;font-size:0.9rem" onclick="analyzeLink()">
+                🔍 Analyser
+              </button>
+            </div>
+          </div>
+
+          <!-- Logos plateformes supportées -->
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px">
+            <span style="color:var(--muted);font-size:0.78rem;align-self:center">Supporté :</span>
+            <span class="platform-badge" style="background:#ffa500">🎵 Audiomack</span>
+            <span class="platform-badge" style="background:#e91e63">🎶 Boomplay</span>
+            <span class="platform-badge" style="background:#ff5500">☁️ SoundCloud</span>
+            <span class="platform-badge" style="background:#ff0000">▶ YouTube</span>
+            <span class="platform-badge" style="background:#1db954">💚 Spotify</span>
+            <span class="platform-badge" style="background:#a238ff">🎧 Deezer</span>
+            <span class="platform-badge" style="background:#fc3c44">🍎 Apple Music</span>
+          </div>
+
+          <!-- Résultat de l'analyse -->
+          <div id="linkPreview" style="display:none;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px">
+            <div style="display:flex;gap:14px;align-items:center">
+              <!-- Cover auto-détectée -->
+              <div id="linkCoverPreview" style="width:72px;height:72px;border-radius:8px;background:var(--border);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:2rem">🎵</div>
+              <div style="flex:1;min-width:0">
+                <div id="linkPlatformBadge" style="font-size:0.75rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px"></div>
+                <div id="linkPreviewTitle" style="font-weight:700;font-size:1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
+                <div id="linkPreviewArtist" style="color:var(--muted);font-size:0.9rem;margin-top:2px"></div>
+                <div id="linkPreviewDuration" style="color:var(--muted);font-size:0.8rem;margin-top:4px"></div>
+              </div>
+              <div style="text-align:center;flex-shrink:0">
+                <div style="font-size:1.8rem" id="linkPreviewIcon">✅</div>
+                <div style="font-size:0.7rem;color:#00cc66;margin-top:2px">Détecté</div>
+              </div>
+            </div>
+            <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:0.8rem;color:var(--muted)">
+              💡 Les champs ont été remplis automatiquement — vérifiez et ajustez si besoin avant de publier.
+            </div>
+          </div>
+
+          <!-- Erreur analyse -->
+          <div id="linkError" style="display:none;background:rgba(255,68,68,0.1);border:1px solid rgba(255,68,68,0.3);border-radius:8px;padding:12px;margin-bottom:12px;color:#ff6666;font-size:0.9rem"></div>
+
+          <!-- Spinner -->
+          <div id="linkLoading" style="display:none;text-align:center;padding:20px;color:var(--muted)">
+            <div style="font-size:1.5rem;animation:spin 1s linear infinite;display:inline-block">⚙️</div>
+            <div style="margin-top:8px;font-size:0.9rem">Analyse du lien en cours...</div>
+          </div>
+
+          <!-- Cover manuelle (si non détectée) -->
+          <div class="form-group" id="linkCoverGroup">
+            <label id="linkCoverLabel">Image de couverture <span style="color:var(--muted);font-size:0.8rem">(optionnel — auto-détectée si dispo)</span></label>
+            <input type="file" id="songCoverLink" accept="image/*">
+          </div>
+
+        </div>
+
+        <!-- Publication programmée -->
+        <div class="form-group">
+          <label>📅 Publication programmée <span style="color:var(--muted);font-size:.8rem">(optionnel — laisser vide pour publier maintenant)</span></label>
+          <input type="datetime-local" id="songPublishAt">
+        </div>
+
+        <!-- Paroles -->
+        <div class="form-group">
+          <label>🎤 Paroles <span style="color:var(--muted);font-size:.8rem">(optionnel)</span></label>
+          <textarea id="songLyrics" rows="5" placeholder="Colle les paroles ici (elles seront affichées dans le player plein écran)..."></textarea>
+        </div>
+
+        <!-- Tag Vocal IA Status -->
+        <div id="vocalTagBadge" style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:rgba(255,62,0,0.08);border:1px solid rgba(255,62,0,0.25);border-radius:10px;margin-bottom:14px">
+          <div style="font-size:1.4rem">🎙️</div>
+          <div style="flex:1">
+            <div style="font-weight:700;font-size:0.9rem;color:var(--accent2)">Tag Vocal IA — MichiNo-</div>
+            <div id="vocalTagStatus" style="font-size:0.8rem;color:var(--muted)">Vérification...</div>
+          </div>
+          <div id="vocalTagDot" style="width:10px;height:10px;border-radius:50%;background:#666;flex-shrink:0"></div>
+        </div>
+
+        <button class="btn" onclick="uploadSong()">🎵 Publier la Chanson</button>
+      </div>
+    </div>
+
+    <!-- VIDEOS PAGE -->
+    <div id="page-videos" style="display:none">
+      <div class="page-title">🎬 Ajouter une Vidéo</div>
+
+      <div class="panel">
+        <div class="panel-title">Type d'upload</div>
+        <div class="toggle-group">
+          <button class="toggle-btn active" onclick="setUploadType('video','local')">📁 Depuis PC</button>
+          <button class="toggle-btn" onclick="setUploadType('video','youtube')">▶ YouTube</button>
+        </div>
+
+        <div class="alert" id="videoAlert"></div>
+
+        <div class="form-group">
+          <label>Titre de la vidéo *</label>
+          <input type="text" id="videoTitle" placeholder="Ex: Official Video">
+        </div>
+        <div class="form-group">
+          <label>Artiste *</label>
+          <input type="text" id="videoArtist" placeholder="Ex: Burna Boy">
+        </div>
+
+        <!-- LOCAL UPLOAD -->
+        <div id="video-local">
+          <div class="form-group">
+            <label>Fichier Vidéo (MP4) *</label>
+            <input type="file" id="videoFile" accept="video/*">
+          </div>
+          <div class="form-group">
+            <label>Miniature (thumbnail)</label>
+            <input type="file" id="videoThumb" accept="image/*">
+          </div>
+        </div>
+
+        <!-- YOUTUBE -->
+        <div id="video-youtube" style="display:none">
+          <div class="form-group">
+            <label>Lien YouTube *</label>
+            <input type="url" id="youtubeLink" placeholder="https://www.youtube.com/watch?v=...">
+          </div>
+          <div class="form-group">
+            <label>Miniature personnalisée (optionnel)</label>
+            <input type="file" id="videoThumbYT" accept="image/*">
+          </div>
+        </div>
+
+        <button class="btn" onclick="uploadVideo()">🎬 Publier la Vidéo</button>
+      </div>
+    </div>
+
+    <!-- IMAGE GEN PAGE -->
+    <div id="page-imagegen" style="display:none">
+      <div class="page-title">🎨 Générateur Texte → Image</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+
+        <!-- LEFT: CONTROLS -->
+        <div>
+          <div class="panel">
+            <div class="panel-title">✍️ Décrivez votre image</div>
+            <div class="alert" id="imgAlert"></div>
+
+            <div class="form-group">
+              <label>Prompt (description en anglais)</label>
+              <textarea id="imgPrompt" rows="4" placeholder="Ex: Professional African music album cover, dark background, orange fire flames, bold typography, cinematic lighting, 4K quality"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label>❌ Exclure (négatif)</label>
+              <input type="text" id="imgNegative" placeholder="Ex: blurry, ugly, watermark, text...">
+            </div>
+
+            <div class="form-group">
+              <label>Style</label>
+              <select id="imgStyle" onchange="updatePromptStyle()">
+                <option value="">Aucun style spécifique</option>
+                <option value=", professional album cover art, music industry">🎵 Pochette d'album</option>
+                <option value=", concert poster, event flyer, vivid colors">🎪 Affiche Concert</option>
+                <option value=", cinematic portrait, professional photography">📸 Portrait Artiste</option>
+                <option value=", social media banner, modern graphic design">📱 Bannière Réseaux</option>
+                <option value=", African art style, vibrant colors, cultural">🌍 Style Africain</option>
+                <option value=", neon lights, dark background, cyberpunk vibes">💡 Neon / Cyberpunk</option>
+                <option value=", watercolor painting, artistic, creative">🎨 Aquarelle</option>
+                <option value=", 3D render, glossy, professional, sharp">🔷 3D Render</option>
+              </select>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+              <div class="form-group">
+                <label>Ratio</label>
+                <select id="imgRatio">
+                  <option value="square_hd">⬛ Carré (1:1)</option>
+                  <option value="portrait_4_3">📱 Portrait (4:3)</option>
+                  <option value="landscape_4_3">🖼️ Paysage (4:3)</option>
+                  <option value="portrait_16_9">📏 Portrait (16:9)</option>
+                  <option value="landscape_16_9">🖥️ Large (16:9)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Qualité</label>
+                <select id="imgSteps">
+                  <option value="4">⚡ Rapide (4 étapes)</option>
+                  <option value="8" selected>⚖️ Équilibré (8)</option>
+                  <option value="28">🎯 Haute qualité (28)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- PROMPT SUGGESTIONS -->
+            <div class="form-group">
+              <label>💡 Suggestions rapides</label>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px">
+                <button class="preset-chip" onclick="addToPrompt('African artist, dark moody lighting')">🌍 Artiste Africain</button>
+                <button class="preset-chip" onclick="addToPrompt('fire flames background, orange and red')">🔥 Flammes</button>
+                <button class="preset-chip" onclick="addToPrompt('luxury gold and black theme')">✨ Or & Noir</button>
+                <button class="preset-chip" onclick="addToPrompt('street music vibes, urban background')">🏙️ Urbain</button>
+                <button class="preset-chip" onclick="addToPrompt('microphone spotlight stage')">🎤 Scène</button>
+                <button class="preset-chip" onclick="addToPrompt('tropical African sunset, palm trees')">🌅 Coucher soleil</button>
+                <button class="preset-chip" onclick="addToPrompt('cinematic 4K ultra HD sharp details')">🎬 Cinématique</button>
+                <button class="preset-chip" onclick="addToPrompt('dark aesthetic, neon glow, smoke effect')">💨 Smoke & Neon</button>
+              </div>
+            </div>
+
+            <button class="btn" id="generateBtn" onclick="generateImage()">✨ Générer l'Image</button>
+
+            <!-- LOADING BAR -->
+            <div id="imgLoadingBar" style="display:none;margin-top:12px">
+              <div style="color:var(--muted);font-size:0.85rem;margin-bottom:6px" id="imgLoadingText">⏳ Génération en cours...</div>
+              <div style="height:6px;background:var(--border);border-radius:3px;overflow:hidden">
+                <div id="imgLoadingFill" style="height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0%;transition:width 0.5s;border-radius:3px"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- HISTORY -->
+          <div class="panel">
+            <div class="panel-title">🕐 Historique (session)</div>
+            <div id="imgHistory" style="display:flex;flex-wrap:wrap;gap:8px">
+              <p style="color:var(--muted);font-size:0.85rem">Aucune image générée pour l'instant</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: RESULT -->
+        <div>
+          <div class="panel" style="position:sticky;top:20px">
+            <div class="panel-title">🖼️ Résultat</div>
+
+            <div id="imgPlaceholder" style="aspect-ratio:1;background:var(--surface2);border:2px dashed var(--border);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--muted)">
+              <div style="font-size:4rem">🎨</div>
+              <p>Votre image apparaîtra ici</p>
+            </div>
+
+            <div id="imgResultBox" style="display:none">
+              <img id="generatedImg" alt="Image générée" style="width:100%;border-radius:12px;display:block">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px">
+                <button class="btn" onclick="downloadImage()">⬇ Télécharger</button>
+                <button class="btn btn-secondary" onclick="useAsCover()">🎵 Utiliser comme Cover</button>
+              </div>
+              <button class="btn btn-secondary" style="margin-top:8px;width:100%" onclick="generateImage()">🔄 Regénérer</button>
+              <div style="margin-top:10px;padding:10px;background:var(--surface2);border-radius:8px">
+                <div style="color:var(--muted);font-size:0.75rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Prompt utilisé</div>
+                <div id="usedPrompt" style="font-size:0.85rem;color:var(--text)"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CHAT PAGE -->
+    <div id="page-chat" style="display:none">
+      <div class="page-title">💬 Messages des Internautes</div>
+
+      <div style="display:grid;grid-template-columns:300px 1fr;gap:20px;height:calc(100vh - 160px)">
+
+        <!-- LISTE DES CONVERSATIONS -->
+        <div style="display:flex;flex-direction:column;gap:0;background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden">
+          <div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+            <div style="font-family:'Bebas Neue',cursive;font-size:1.1rem;letter-spacing:2px;color:var(--accent2)">Conversations</div>
+            <button class="btn-small btn btn-secondary" onclick="loadChats()" style="padding:4px 10px;font-size:0.8rem">🔄</button>
+          </div>
+          <div id="chatList" style="overflow-y:auto;flex:1">
+            <div style="padding:20px;text-align:center;color:var(--muted)">Chargement...</div>
+          </div>
+        </div>
+
+        <!-- FENÊTRE DE CONVERSATION -->
+        <div style="display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden">
+
+          <!-- Header conversation -->
+          <div id="chatConvHeader" style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px">
+            <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:1.1rem">👤</div>
+            <div style="flex:1">
+              <div id="chatConvName" style="font-weight:700;font-size:1rem">Sélectionnez une conversation</div>
+              <div id="chatConvMeta" style="color:var(--muted);font-size:0.8rem">--</div>
+            </div>
+            <div style="display:flex;gap:8px">
+              <button class="btn-small btn btn-secondary" id="btnCloseConv" onclick="closeConversation()" style="display:none">✅ Fermer</button>
+              <button class="btn-small btn btn-danger" id="btnDeleteConv" onclick="deleteConversation()" style="display:none">🗑</button>
+            </div>
+          </div>
+
+          <!-- Messages -->
+          <div id="chatConvMessages" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;min-height:200px">
+            <div style="text-align:center;color:var(--muted);padding:40px">
+              <div style="font-size:3rem;margin-bottom:12px">💬</div>
+              <p>Cliquez sur une conversation pour voir les messages</p>
+            </div>
+          </div>
+
+          <!-- Zone de réponse -->
+          <div id="chatReplyBar" style="padding:12px 16px;border-top:1px solid var(--border);display:none">
+            <div style="display:flex;gap:10px;align-items:flex-end">
+              <textarea id="adminReplyText" placeholder="Écrivez votre réponse..."
+                style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-family:'Rajdhani',sans-serif;font-size:0.95rem;outline:none;resize:none;min-height:60px;max-height:120px"
+                onkeypress="if(event.ctrlKey && event.key==='Enter') sendAdminReply()"></textarea>
+              <button class="btn" style="width:auto;padding:12px 20px;height:60px" onclick="sendAdminReply()">
+                Envoyer ➤
+              </button>
+            </div>
+            <div style="color:var(--muted);font-size:0.75rem;margin-top:6px">Ctrl+Entrée pour envoyer rapidement</div>
+
+            <!-- Réponses rapides -->
+            <div style="margin-top:10px">
+              <div style="color:var(--muted);font-size:0.75rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">⚡ Réponses rapides</div>
+              <div style="display:flex;flex-wrap:wrap;gap:6px" id="quickReplies"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- THEME PAGE -->
+    <div id="page-theme" style="display:none">
+      <div class="page-title">🎨 Thème du Site</div>
+      <div style="display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start">
+
+        <!-- LEFT CONTROLS -->
+        <div>
+
+          <!-- PRESETS -->
+          <div class="panel">
+            <div class="panel-title">⚡ Thèmes Prédéfinis</div>
+            <div class="theme-preset-grid" id="themePresetGrid"></div>
+          </div>
+
+          <!-- COLORS -->
+          <div class="panel">
+            <div class="panel-title">🎨 Couleurs Personnalisées</div>
+            <div class="color-row" id="colorPickers"></div>
+          </div>
+
+          <!-- BACKGROUND -->
+          <div class="panel">
+            <div class="panel-title">🖼️ Fond du Site</div>
+            <div class="bg-options" id="bgOptions"></div>
+            <div style="margin-top:12px">
+              <label style="display:block;color:var(--muted);font-size:0.85rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">📁 Image personnalisée</label>
+              <input type="file" id="bgUpload" accept="image/*" onchange="uploadBg(this)" style="color:var(--muted);font-size:0.85rem">
+            </div>
+            <div style="margin-top:12px">
+              <label style="display:block;color:var(--muted);font-size:0.85rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">🔗 URL d'image</label>
+              <div style="display:flex;gap:8px">
+                <input type="url" id="bgUrl" placeholder="https://exemple.com/image.jpg" style="flex:1">
+                <button class="btn" style="width:auto;padding:10px 16px" onclick="applyBgUrl()">Appliquer</button>
+              </div>
+            </div>
+            <div class="slider-row" style="margin-top:12px">
+              <label>Opacité fond</label>
+              <input type="range" min="0" max="100" value="30" id="bgOpacity" oninput="updateBgOpacity(this.value)">
+              <span id="bgOpacityVal">30%</span>
+            </div>
+            <div class="slider-row">
+              <label>Flou fond</label>
+              <input type="range" min="0" max="20" value="0" id="bgBlur" oninput="updateBgBlur(this.value)">
+              <span id="bgBlurVal">0px</span>
+            </div>
+          </div>
+
+          <!-- TYPOGRAPHY -->
+          <div class="panel">
+            <div class="panel-title">✍️ Typographie</div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px" id="fontOptions"></div>
+          </div>
+
+          <!-- EFFECTS -->
+          <div class="panel">
+            <div class="panel-title">✨ Effets Visuels</div>
+            <div class="slider-row">
+              <label>Rayon bordures</label>
+              <input type="range" min="0" max="24" value="12" id="borderRadius" oninput="updateEffect('borderRadius',this.value,'px')">
+              <span id="borderRadiusVal">12px</span>
+            </div>
+            <div class="slider-row">
+              <label>Espacement</label>
+              <input type="range" min="8" max="40" value="16" id="spacing" oninput="updateEffect('spacing',this.value,'px')">
+              <span id="spacingVal">16px</span>
+            </div>
+            <div style="margin-top:8px">
+              <label style="color:var(--muted);font-size:0.85rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;display:block">Effets spéciaux</label>
+              <div style="display:flex;flex-wrap:wrap;gap:8px" id="effectOptions"></div>
+            </div>
+          </div>
+
+          <!-- ACTIONS -->
+          <div style="display:flex;gap:12px;flex-wrap:wrap">
+            <button class="btn" style="flex:1" onclick="saveAndApplyTheme()">✅ Appliquer sur le Site</button>
+            <button class="btn btn-secondary" style="flex:1" onclick="resetTheme()">↺ Réinitialiser</button>
+            <button class="btn btn-secondary" style="flex:1" onclick="exportTheme()">📋 Exporter CSS</button>
+          </div>
+
+        </div>
+
+        <!-- RIGHT: LIVE PREVIEW -->
+        <div style="position:sticky;top:20px">
+          <div class="panel">
+            <div class="panel-title">👁️ Aperçu en Direct</div>
+            <div class="live-preview-frame" id="livePreviewFrame">
+              <div class="preview-mini-header" id="pvHeader">
+                <div class="preview-mini-logo" id="pvLogo">MichiNo-</div>
+                <div class="preview-mini-search" id="pvSearch"></div>
+              </div>
+              <div class="preview-mini-body" id="pvBody">
+                <div class="preview-mini-section" id="pvSection">🔥 LATEST MUSIC</div>
+                <div class="preview-mini-cards" id="pvCards"></div>
+              </div>
+            </div>
+            <div style="margin-top:12px;padding:10px;background:var(--surface2);border-radius:8px">
+              <div style="font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Infos thème actif</div>
+              <div id="themeInfo" style="font-size:0.85rem;color:var(--text)">Thème par défaut</div>
+            </div>
+            <a href="/" target="_blank">
+              <button class="btn btn-secondary" style="margin-top:10px;width:100%">🌐 Voir le vrai site</button>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- MANAGE PAGE -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- PAGE NOTIFICATIONS                                    -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div id="page-notifications" style="display:none">
+      <div class="page-title">🔔 Notifications & Abonnés</div>
+
+      <!-- Stats -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-bottom:24px">
+        <div class="panel" style="text-align:center;padding:20px">
+          <div style="font-size:2rem;margin-bottom:6px">📱</div>
+          <div id="notifPushCount" style="font-family:'Bebas Neue',cursive;font-size:2.4rem;color:var(--accent)">–</div>
+          <div style="font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Push Abonnés</div>
+        </div>
+        <div class="panel" style="text-align:center;padding:20px">
+          <div style="font-size:2rem;margin-bottom:6px">📩</div>
+          <div id="notifEmailCount" style="font-family:'Bebas Neue',cursive;font-size:2.4rem;color:var(--accent)">–</div>
+          <div style="font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Email Inscrits</div>
+        </div>
+      </div>
+
+      <!-- Envoyer une notification push -->
+      <div class="panel" style="margin-bottom:20px">
+        <div class="panel-title">📤 Envoyer une notification push</div>
+        <div style="margin-bottom:12px;padding:10px 14px;background:rgba(255,140,0,.06);border:1px solid rgba(255,140,0,.2);border-radius:8px;font-size:.82rem;color:var(--muted)">
+          ⚙️ Nécessite <code>VAPID_PUBLIC_KEY</code> et <code>VAPID_PRIVATE_KEY</code> dans <code>.env</code><br>
+          Génère tes clés avec : <code>npx web-push generate-vapid-keys</code>
+        </div>
+        <div class="alert" id="pushAlert"></div>
+        <div class="form-group">
+          <label>Titre de la notification *</label>
+          <input type="text" id="pushTitle" placeholder="Ex: 🎵 Nouveau son dispo !">
+        </div>
+        <div class="form-group">
+          <label>Message *</label>
+          <input type="text" id="pushBody" placeholder="Ex: Écoute le dernier Afrobeat de...">
+        </div>
+        <div class="form-group">
+          <label>URL de redirection (optionnel)</label>
+          <input type="url" id="pushUrl" placeholder="https://... (défaut : page d'accueil)">
+        </div>
+        <button class="btn" onclick="sendPushNotif()">🔔 Envoyer à tous les abonnés</button>
+      </div>
+
+      <!-- Liste emails -->
+      <div class="panel">
+        <div class="panel-title">📩 Inscrits Newsletter</div>
+        <div id="emailSubList" style="overflow-x:auto"></div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- PAGE ANALYTICS                                       -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div id="page-analytics" style="display:none">
+      <div class="page-title">📊 Analytics & Statistiques</div>
+
+      <!-- KPIs -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-bottom:24px" id="kpiGrid">
+        <div class="panel" style="text-align:center;padding:20px">
+          <div style="font-size:2rem;margin-bottom:6px">🎵</div>
+          <div id="kpiSongs" style="font-family:'Bebas Neue',cursive;font-size:2.4rem;color:var(--accent)">–</div>
+          <div style="font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Chansons</div>
+        </div>
+        <div class="panel" style="text-align:center;padding:20px">
+          <div style="font-size:2rem;margin-bottom:6px">🎬</div>
+          <div id="kpiVideos" style="font-family:'Bebas Neue',cursive;font-size:2.4rem;color:var(--accent)">–</div>
+          <div style="font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Vidéos</div>
+        </div>
+        <div class="panel" style="text-align:center;padding:20px">
+          <div style="font-size:2rem;margin-bottom:6px">▶️</div>
+          <div id="kpiPlays" style="font-family:'Bebas Neue',cursive;font-size:2.4rem;color:var(--accent)">–</div>
+          <div style="font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Écoutes</div>
+        </div>
+        <div class="panel" style="text-align:center;padding:20px">
+          <div style="font-size:2rem;margin-bottom:6px">⬇️</div>
+          <div id="kpiDownloads" style="font-family:'Bebas Neue',cursive;font-size:2.4rem;color:var(--accent)">–</div>
+          <div style="font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Téléchargements</div>
+        </div>
+        <div class="panel" style="text-align:center;padding:20px">
+          <div style="font-size:2rem;margin-bottom:6px">👁️</div>
+          <div id="kpiViews" style="font-family:'Bebas Neue',cursive;font-size:2.4rem;color:var(--accent)">–</div>
+          <div style="font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Vues Vidéo</div>
+        </div>
+      </div>
+
+      <!-- Charts row -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px">
+        <div class="panel">
+          <div class="panel-title">📈 Activité 30 derniers jours</div>
+          <canvas id="chartActivity" height="200"></canvas>
+        </div>
+        <div class="panel">
+          <div class="panel-title">🎭 Répartition par genre</div>
+          <canvas id="chartGenre" height="200"></canvas>
+        </div>
+      </div>
+
+      <!-- Top songs -->
+      <div class="panel" style="margin-bottom:20px">
+        <div class="panel-title">🏆 Top 10 — Téléchargements</div>
+        <div id="topSongsTable" style="overflow-x:auto"></div>
+      </div>
+
+      <!-- Top artists -->
+      <div class="panel">
+        <div class="panel-title">🌟 Top Artistes</div>
+        <div id="topArtistsList"></div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- PAGE AUDIT LOG                                       -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div id="page-audit" style="display:none">
+      <div class="page-title">🔍 Audit Log</div>
+      <div class="panel">
+        <div class="panel-title">Dernières 20 actions admin</div>
+        <div id="auditLogList" style="overflow-x:auto"></div>
+      </div>
+    </div>
+
+    <div id="page-manage" style="display:none">
+      <div class="page-title">📋 Gérer le Contenu</div>
+
+      <div class="panel" style="margin-bottom:16px">
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <input type="text" id="manageSearch" placeholder="🔍 Rechercher titre, artiste..." style="flex:1;min-width:180px" oninput="filterManageContent()" aria-label="Rechercher dans le contenu">
+          <select id="manageGenreFilter" onchange="filterManageContent()" style="min-width:130px" aria-label="Filtrer par genre">
+            <option value="">Tous les genres</option>
+            <option>Afrobeat</option><option>Amapiano</option><option>Afropop</option>
+            <option>Highlife</option><option>Hip-Hop</option><option>R&B</option><option>Gospel</option>
+          </select>
+          <div id="manageStats" style="font-size:.82rem;color:var(--muted)"></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">🎵 Mes Chansons</div>
+        <input class="manage-search" type="search" id="manageSongsSearch" placeholder="🔍 Rechercher une chanson..." oninput="filterManageSongs(this.value)" aria-label="Rechercher dans mes chansons">
+        <div id="manageSongs"><div class="loading" style="padding:20px;text-align:center;color:var(--muted)">Chargement...</div></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">🎬 Mes Vidéos</div>
+        <input class="manage-search" type="search" id="manageVideosSearch" placeholder="🔍 Rechercher une vidéo..." oninput="filterManageVideos(this.value)" aria-label="Rechercher dans mes vidéos">
+        <div id="manageVideos"><div class="loading" style="padding:20px;text-align:center;color:var(--muted)">Chargement...</div></div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- PAGE SUBSCRIBERS                                     -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div id="page-subscribers" style="display:none">
+      <div class="page-title">📧 Abonnés Newsletter</div>
+      <div class="panel" style="margin-bottom:16px">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+          <div>
+            <div style="font-family:'Bebas Neue',cursive;font-size:3rem;color:var(--accent)" id="subsTotal">–</div>
+            <div style="color:var(--muted);font-size:.82rem;text-transform:uppercase;letter-spacing:1px">Abonnés actifs</div>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn btn-secondary" style="width:auto" onclick="exportSubscribers()">⬇ Exporter CSV</button>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">Liste des abonnés</div>
+        <div id="subsList" style="overflow-x:auto"></div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- PAGE COMMENTS MODERATION                            -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div id="page-comments-admin" style="display:none">
+      <div class="page-title">💬 Modération Commentaires</div>
+      <div class="panel">
+        <div class="panel-title">Derniers commentaires</div>
+        <div id="adminCommentsList" style="overflow-x:auto"></div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- PAGE PUSH NOTIFICATIONS                             -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div id="page-push-admin" style="display:none">
+      <div class="page-title">🔔 Notifications Push</div>
+      <div class="panel" style="margin-bottom:16px">
+        <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap">
+          <div>
+            <div style="font-family:'Bebas Neue',cursive;font-size:3rem;color:var(--accent)" id="pushSubsCount">–</div>
+            <div style="color:var(--muted);font-size:.82rem;text-transform:uppercase;letter-spacing:1px">Appareils abonnés</div>
+          </div>
+          <div style="flex:1;min-width:200px;background:rgba(255,62,0,.07);border:1px solid rgba(255,62,0,.2);border-radius:12px;padding:14px">
+            <div style="font-size:.82rem;color:var(--muted);margin-bottom:8px">VAPID configuré : <strong id="vapidStatus" style="color:var(--success)">–</strong></div>
+            <div style="font-size:.78rem;color:var(--muted)">Ajouter VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY et VAPID_EMAIL dans le .env<br>Générer avec : <code style="background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:.74rem">npx web-push generate-vapid-keys</code></div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">📣 Envoyer une notification</div>
+        <div class="alert" id="pushAlert"></div>
+        <div class="form-group">
+          <label>Titre *</label>
+          <input type="text" id="pushTitle" placeholder="Ex: 🎵 Nouveau son disponible !" maxlength="100">
+        </div>
+        <div class="form-group">
+          <label>Message *</label>
+          <input type="text" id="pushBody" placeholder="Ex: Fireboy DML vient de sortir son nouveau single" maxlength="200">
+        </div>
+        <div class="form-group">
+          <label>URL de destination</label>
+          <input type="text" id="pushUrl" placeholder="/ (page d'accueil par défaut)" value="/">
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn" style="width:auto" onclick="sendPushNotif()">🔔 Envoyer à tous</button>
+          <button class="btn btn-secondary" style="width:auto;font-size:.85rem" onclick="previewPushTitle()">👁 Prévisualiser</button>
+        </div>
+        <div id="pushResult" style="margin-top:12px;color:var(--success);font-weight:600;display:none"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">⚡ Templates rapides</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px" id="pushTemplates"></div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- PAGE SEO GOOGLE IA                                  -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div id="page-seo" style="display:none">
+      <div class="page-title">📈 Audit SEO Google IA</div>
+
+      <!-- Score principal -->
+      <div class="panel" id="seoScorePanel">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px">
+          <div>
+            <div style="font-family:'Bebas Neue',cursive;font-size:1.1rem;color:var(--muted);letter-spacing:2px">SCORE SEO GOOGLE</div>
+            <div id="seoScoreValue" style="font-family:'Bebas Neue',cursive;font-size:5rem;line-height:1;background:linear-gradient(135deg,#ff3e00,#ff8c00);-webkit-background-clip:text;-webkit-text-fill-color:transparent">--</div>
+            <div id="seoScoreLabel" style="font-size:1.1rem;color:var(--muted);margin-top:4px">Audit en attente...</div>
+          </div>
+          <!-- Jauge circulaire -->
+          <div style="position:relative;width:130px;height:130px;flex-shrink:0">
+            <svg width="130" height="130" style="transform:rotate(-90deg)">
+              <circle cx="65" cy="65" r="56" fill="none" stroke="#222" stroke-width="12"/>
+              <circle id="seoGauge" cx="65" cy="65" r="56" fill="none" stroke="url(#seoGrad)" stroke-width="12"
+                stroke-linecap="round" stroke-dasharray="352" stroke-dashoffset="352" style="transition:stroke-dashoffset 1.2s ease"/>
+              <defs>
+                <linearGradient id="seoGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#ff3e00"/>
+                  <stop offset="100%" stop-color="#ff8c00"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            <div id="seoGaugePct" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',cursive;font-size:1.8rem;color:var(--text)">--</div>
+          </div>
+          <!-- Stats rapides -->
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="background:rgba(0,204,102,0.1);border:1px solid rgba(0,204,102,0.3);border-radius:10px;padding:10px 18px;text-align:center">
+              <div id="seoPassCount" style="font-family:'Bebas Neue',cursive;font-size:2rem;color:#00cc66">--</div>
+              <div style="font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Critères OK</div>
+            </div>
+            <div style="background:rgba(255,68,68,0.1);border:1px solid rgba(255,68,68,0.3);border-radius:10px;padding:10px 18px;text-align:center">
+              <div id="seoFailCount" style="font-family:'Bebas Neue',cursive;font-size:2rem;color:#ff4444">--</div>
+              <div style="font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px">À corriger</div>
+            </div>
+          </div>
+          <!-- Boutons d action -->
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <button class="btn" style="width:180px" onclick="launchAudit(false)">🔍 Lancer l'audit</button>
+            <button class="btn btn-secondary" style="width:180px" onclick="launchAudit(true)">🔧 Audit + Auto-fix</button>
+          </div>
+        </div>
+        <div id="seoLastRun" style="margin-top:12px;color:var(--muted);font-size:0.85rem"></div>
+        <div id="seoRunning" style="display:none;margin-top:12px;color:var(--accent2)">
+          <span style="animation:spin 1s linear infinite;display:inline-block">⚙️</span> Audit en cours — analyse des 25 critères Google...
+        </div>
+      </div>
+
+      <!-- Conseil IA -->
+      <div class="panel" id="seoAiPanel" style="display:none">
+        <div class="panel-title">🤖 Analyse IA — Plan d'action Google</div>
+        <div id="seoAiText" style="color:var(--text);line-height:1.7;font-size:0.97rem;white-space:pre-wrap"></div>
+      </div>
+
+      <!-- Auto-fixes appliqués -->
+      <div class="panel" id="seoFixesPanel" style="display:none">
+        <div class="panel-title">🔧 Corrections appliquées automatiquement</div>
+        <div id="seoFixesList"></div>
+      </div>
+
+      <!-- Résultats par catégorie -->
+      <div id="seoCategoryGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:20px"></div>
+
+      <!-- Liste détaillée des critères -->
+      <div class="panel">
+        <div class="panel-title" style="display:flex;justify-content:space-between;align-items:center">
+          <span>📋 Détail des 25 critères Google</span>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-secondary btn-small" onclick="filterCriteria('all')">Tous</button>
+            <button class="btn btn-secondary btn-small" onclick="filterCriteria('fail')" style="border-color:#ff4444;color:#ff4444">❌ À corriger</button>
+            <button class="btn btn-secondary btn-small" onclick="filterCriteria('pass')" style="border-color:#00cc66;color:#00cc66">✅ Réussis</button>
+          </div>
+        </div>
+        <div id="seoCriteriaList" style="margin-top:12px"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+let token = localStorage.getItem('michino_token');
+if (token) showDashboard();
+
+async function login() {
+  const username = document.getElementById('loginUser').value;
+  const password = document.getElementById('loginPass').value;
+  try {
+    const res = await fetch('/api/admin/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
+    const data = await res.json();
+    if (res.ok) {
+      token = data.token;
+      localStorage.setItem('michino_token', token);
+      showDashboard();
+    } else {
+      showAlert('loginAlert', data.message, 'error');
+    }
+  } catch (e) {
+    showAlert('loginAlert', 'Erreur de connexion', 'error');
+  }
+}
+
+function showDashboard() {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+  loadStats();
+}
+
+function logout() {
+  localStorage.removeItem('michino_token');
+  location.reload();
+}
+
+function showPage(page) {
+  document.querySelectorAll('[id^="page-"]').forEach(el => el.style.display = 'none');
+  document.getElementById('page-' + page).style.display = 'block';
+  document.querySelectorAll('.menu-item').forEach((el, i) => {
+    const pages = ['home','music','videos','imagegen','manage'];
+    el.classList.toggle('active', pages[i] === page);
+  });
+  if (page === 'manage') loadManage();
+}
+
+async function loadStats() {
+  try {
+    const [songsRes, videosRes] = await Promise.all([
+      fetch('/api/songs'), fetch('/api/videos')
+    ]);
+    const songs = await songsRes.json();
+    const videos = await videosRes.json();
+    document.getElementById('statSongs').textContent = songs.length;
+    document.getElementById('statVideos').textContent = videos.length;
+    document.getElementById('statDownloads').textContent = songs.reduce((a,s) => a + (s.downloads||0), 0);
+    document.getElementById('statViews').textContent = videos.reduce((a,v) => a + (v.views||0), 0);
+  } catch (e) {}
+}
+
+function setUploadType(type, mode) {
+  if (type === 'song') {
+    document.getElementById('song-local').style.display = mode === 'local' ? 'block' : 'none';
+    document.getElementById('song-link').style.display = mode === 'link' ? 'block' : 'none';
+  } else {
+    document.getElementById('video-local').style.display = mode === 'local' ? 'block' : 'none';
+    document.getElementById('video-youtube').style.display = mode === 'youtube' ? 'block' : 'none';
+  }
+  const parent = document.querySelector(type === 'song' ? '#page-music .toggle-group' : '#page-videos .toggle-group');
+  parent.querySelectorAll('.toggle-btn').forEach((b, i) => {
+    b.classList.toggle('active', (i === 0 && (mode === 'local')) || (i === 1 && (mode === 'link' || mode === 'youtube')));
+  });
+}
+
+async function uploadSong() {
+  const title = document.getElementById('songTitle').value;
+  const artist = document.getElementById('songArtist').value;
+  if (!title || !artist) return showAlert('songAlert', 'Titre et artiste sont obligatoires', 'error');
+
+  const isLocal = document.getElementById('song-local').style.display !== 'none';
+  const fd = new FormData();
+  fd.append('title', title);
+  fd.append('artist', artist);
+  fd.append('genre', document.getElementById('songGenre').value);
+
+  if (isLocal) {
+    const file = document.getElementById('songFile').files[0];
+    if (!file) return showAlert('songAlert', 'Veuillez choisir un fichier audio', 'error');
+    fd.append('audio', file);
+    const cover = document.getElementById('songCover').files[0];
+    if (cover) fd.append('cover', cover);
+  } else {
+    const link = document.getElementById('songLink').value.trim();
+    if (!link) return showAlert('songAlert', 'Veuillez entrer un lien et cliquer Analyser', 'error');
+    fd.append('streamingLink', link);
+    // Cover : priorité au fichier manuel, sinon URL auto-détectée
+    const coverFile = document.getElementById('songCoverLink').files[0];
+    if (coverFile) {
+      fd.append('cover', coverFile);
+    } else if (analyzedCoverUrl) {
+      fd.append('coverUrl', analyzedCoverUrl);
+    }
+  }
+
+  document.getElementById('songProgress').style.display = 'block';
+  document.getElementById('songProgressFill').style.width = '50%';
+
+  try {
+    const res = await fetch('/api/admin/upload-song', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token },
+      body: fd
+    });
+    const data = await res.json();
+    document.getElementById('songProgressFill').style.width = '100%';
+    if (res.ok) {
+      showAlert('songAlert', '🎵 Chanson publiée avec succès !', 'success');
+      document.getElementById('songTitle').value = '';
+      document.getElementById('songArtist').value = '';
+      loadStats();
+    } else {
+      showAlert('songAlert', data.message || 'Erreur upload', 'error');
+    }
+  } catch (e) {
+    showAlert('songAlert', 'Erreur de connexion', 'error');
+  }
+  setTimeout(() => { document.getElementById('songProgress').style.display = 'none'; document.getElementById('songProgressFill').style.width = '0%'; }, 2000);
+}
+
+async function uploadVideo() {
+  const title = document.getElementById('videoTitle').value;
+  const artist = document.getElementById('videoArtist').value;
+  if (!title || !artist) return showAlert('videoAlert', 'Titre et artiste sont obligatoires', 'error');
+
+  const isLocal = document.getElementById('video-local').style.display !== 'none';
+  const fd = new FormData();
+  fd.append('title', title);
+  fd.append('artist', artist);
+
+  if (isLocal) {
+    const file = document.getElementById('videoFile').files[0];
+    if (!file) return showAlert('videoAlert', 'Veuillez choisir une vidéo', 'error');
+    fd.append('video', file);
+    const thumb = document.getElementById('videoThumb').files[0];
+    if (thumb) fd.append('thumbnail', thumb);
+  } else {
+    const ytLink = document.getElementById('youtubeLink').value;
+    if (!ytLink) return showAlert('videoAlert', 'Veuillez entrer un lien YouTube', 'error');
+    fd.append('youtubeLink', ytLink);
+    const thumb = document.getElementById('videoThumbYT').files[0];
+    if (thumb) fd.append('thumbnail', thumb);
+  }
+
+  try {
+    const res = await fetch('/api/admin/upload-video', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token },
+      body: fd
+    });
+    const data = await res.json();
+    if (res.ok) {
+      showAlert('videoAlert', '🎬 Vidéo publiée avec succès !', 'success');
+      document.getElementById('videoTitle').value = '';
+      document.getElementById('videoArtist').value = '';
+      loadStats();
+    } else {
+      showAlert('videoAlert', data.message || 'Erreur upload', 'error');
+    }
+  } catch (e) {
+    showAlert('videoAlert', 'Erreur de connexion', 'error');
+  }
+}
+
+async function generateImage() {
+  const promptBase = document.getElementById('imgPrompt').value.trim();
+  const style = document.getElementById('imgStyle').value;
+  const negative = document.getElementById('imgNegative').value.trim();
+  const ratio = document.getElementById('imgRatio').value;
+  const steps = parseInt(document.getElementById('imgSteps').value);
+
+  if (!promptBase) return showAlert('imgAlert', 'Veuillez décrire votre image', 'error');
+
+  const fullPrompt = promptBase + style;
+
+  document.getElementById('generateBtn').disabled = true;
+  document.getElementById('imgPlaceholder').style.display = 'none';
+  document.getElementById('imgResultBox').style.display = 'none';
+  document.getElementById('imgLoadingBar').style.display = 'block';
+
+  // Animate loading bar
+  let progress = 0;
+  const loadingFill = document.getElementById('imgLoadingFill');
+  const loadingText = document.getElementById('imgLoadingText');
+  const loadingMessages = ['⏳ Initialisation du modèle IA...','🎨 Création de la composition...','✨ Ajout des détails...','🖌️ Finalisation...'];
+  let msgIdx = 0;
+  const interval = setInterval(() => {
+    progress = Math.min(progress + (100 / (steps * 3)), 90);
+    loadingFill.style.width = progress + '%';
+    if (progress > msgIdx * 25 && msgIdx < loadingMessages.length) {
+      loadingText.textContent = loadingMessages[msgIdx++];
+    }
+  }, 600);
+
+  try {
+    // Try fal.ai (free tier) first, fallback to Hugging Face
+    const models = [
+      { url: 'https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-schnell', type: 'hf' },
+      { url: 'https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0', type: 'hf' },
+      { url: 'https://api-inference.huggingface.co/models/runwayml/stable-diffusion-v1-5', type: 'hf' },
+    ];
+
+    let blob = null;
+    for (const model of models) {
+      try {
+        const body = { inputs: fullPrompt };
+        if (negative) body.parameters = { negative_prompt: negative, num_inference_steps: steps };
+        const res = await fetch(model.url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        if (res.ok) { blob = await res.blob(); break; }
+      } catch(e) { continue; }
+    }
+
+    clearInterval(interval);
+    loadingFill.style.width = '100%';
+
+    if (blob) {
+      const url = URL.createObjectURL(blob);
+      document.getElementById('generatedImg').src = url;
+      document.getElementById('usedPrompt').textContent = fullPrompt;
+      document.getElementById('imgResultBox').style.display = 'block';
+      document.getElementById('imgLoadingBar').style.display = 'none';
+
+      // Add to history
+      addToHistory(url, promptBase);
+      showAlert('imgAlert', '✅ Image générée avec succès !', 'success');
+    } else {
+      throw new Error('Tous les modèles ont échoué');
+    }
+  } catch (e) {
+    clearInterval(interval);
+    document.getElementById('imgLoadingBar').style.display = 'none';
+    document.getElementById('imgPlaceholder').style.display = 'flex';
+    showAlert('imgAlert', '❌ Erreur : ' + e.message + '. Réessayez dans 20 secondes.', 'error');
+  }
+  document.getElementById('generateBtn').disabled = false;
+}
+
+function addToPrompt(text) {
+  const el = document.getElementById('imgPrompt');
+  el.value = el.value ? el.value + ', ' + text : text;
+}
+
+function updatePromptStyle() {}
+
+function addToHistory(url, prompt) {
+  const hist = document.getElementById('imgHistory');
+  if (hist.querySelector('p')) hist.innerHTML = '';
+  const img = document.createElement('img');
+  img.src = url;
+  img.className = 'history-thumb';
+  img.title = prompt;
+  img.onclick = () => {
+    document.getElementById('generatedImg').src = url;
+    document.getElementById('usedPrompt').textContent = prompt;
+    document.getElementById('imgResultBox').style.display = 'block';
+    document.getElementById('imgPlaceholder').style.display = 'none';
+  };
+  hist.prepend(img);
+}
+
+function downloadImage() {
+  const img = document.getElementById('generatedImg');
+  const a = document.createElement('a');
+  a.href = img.src;
+  a.download = 'michino-image-' + Date.now() + '.png';
+  a.click();
+}
+
+function useAsCover() {
+  showAlert('imgAlert', '✅ Copiez l\'URL de l\'image et collez-la dans le champ "Image de couverture" lors de l\'upload d\'une chanson.', 'success');
+  showPage('music');
+}
+
+async function loadManage() {
+  try {
+    const [songsRes, videosRes] = await Promise.all([
+      fetch('/api/songs'), fetch('/api/videos')
+    ]);
+    const songs = await songsRes.json();
+    const videos = await videosRes.json();
+
+    document.getElementById('manageSongs').innerHTML = songs.length ? songs.map(s => `
+      <div class="content-item">
+        ${s.coverImage ? `<img src="${s.coverImage}" style="width:48px;height:48px;border-radius:6px;object-fit:cover">` : '<div class="content-thumb">🎵</div>'}
+        <div class="content-info">
+          <div class="content-title">${s.title}</div>
+          <div class="content-meta">${s.artist} • ⬇ ${s.downloads}</div>
+        </div>
+        <div class="content-actions">
+          <button class="btn-small btn btn-danger" onclick="deleteSong('${s._id}')">🗑</button>
+        </div>
+      </div>
+    `).join('') : '<p style="color:var(--muted);padding:12px">Aucune chanson</p>';
+
+    document.getElementById('manageVideos').innerHTML = videos.length ? videos.map(v => `
+      <div class="content-item">
+        ${v.thumbnail ? `<img src="${v.thumbnail}" style="width:48px;height:48px;border-radius:6px;object-fit:cover">` : '<div class="content-thumb">🎬</div>'}
+        <div class="content-info">
+          <div class="content-title">${v.title}</div>
+          <div class="content-meta">${v.artist} • 👁 ${v.views}</div>
+        </div>
+        <div class="content-actions">
+          <button class="btn-small btn btn-danger" onclick="deleteVideo('${v._id}')">🗑</button>
+        </div>
+      </div>
+    `).join('') : '<p style="color:var(--muted);padding:12px">Aucune vidéo</p>';
+  } catch (e) {}
+}
+
+async function deleteSong(id) {
+  if (!confirm('Supprimer cette chanson ?')) return;
+  await fetch('/api/admin/song/' + id, {
+    method: 'DELETE',
+    headers: { 'Authorization': 'Bearer ' + token }
+  });
+  loadManage();
+  loadStats();
+}
+
+async function deleteVideo(id) {
+  if (!confirm('Supprimer cette vidéo ?')) return;
+  await fetch('/api/admin/video/' + id, {
+    method: 'DELETE',
+    headers: { 'Authorization': 'Bearer ' + token }
+  });
+  loadManage();
+  loadStats();
+}
+
+function showAlert(id, msg, type) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.className = 'alert ' + type;
+  setTimeout(() => el.className = 'alert', 5000);
+}
+
+// =============================================
+// 💬 CHAT ADMIN ENGINE
+// =============================================
+
+let currentChatId = null;
+let chatPollInterval = null;
+
+const QUICK_REPLIES = [
+  "Merci pour votre message ! 🎵",
+  "Bonjour ! Comment puis-je vous aider ?",
+  "La chanson est disponible en téléchargement sur notre site !",
+  "Merci de nous suivre sur MichiNo- ! 🔥",
+  "Nous allons bientôt ajouter plus de musiques !",
+  "Restez connecté pour les nouveautés ! 🎶",
+  "Votre demande a bien été reçue. Merci !",
+  "N'hésitez pas à revenir ! 😊",
+];
+
+async function loadChats() {
+  try {
+    const res = await fetch('/api/chat/admin/all', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    const convos = await res.json();
+    const list = document.getElementById('chatList');
+
+    if (!convos.length) {
+      list.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted)">Aucun message pour l\'instant</div>';
+      return;
+    }
+
+    // Update chat count in stats
+    const openCount = convos.filter(c => c.status === 'open').length;
+
+    list.innerHTML = convos.map(c => {
+      const lastMsg = c.messages[c.messages.length - 1];
+      const statusColor = c.status === 'open' ? 'var(--accent)' : c.status === 'answered' ? 'var(--success)' : 'var(--muted)';
+      const statusLabel = c.status === 'open' ? '🔴 Nouveau' : c.status === 'answered' ? '✅ Répondu' : '⬛ Fermé';
+      const isActive = currentChatId === c._id;
+      return `
+        <div onclick="openChat('${c._id}')"
+          style="padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer;
+          background:${isActive ? 'var(--surface2)' : 'transparent'};
+          border-left:3px solid ${isActive ? 'var(--accent)' : 'transparent'};transition:all 0.15s">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+            <div style="font-weight:700;font-size:0.95rem">${c.visitorName}</div>
+            <div style="font-size:0.7rem;color:${statusColor}">${statusLabel}</div>
+          </div>
+          <div style="color:var(--muted);font-size:0.82rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+            ${lastMsg ? lastMsg.text : '...'}</div>
+          <div style="color:var(--border);font-size:0.72rem;margin-top:4px">
+            ${new Date(c.updatedAt).toLocaleString('fr',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}
+            • ${c.messages.length} msg
+          </div>
+        </div>
+      `;
+    }).join('');
+  } catch(e) {}
+}
+
+async function openChat(id) {
+  currentChatId = id;
+  loadChats(); // refresh list to show active
+
+  try {
+    const res = await fetch('/api/chat/admin/all', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    const convos = await res.json();
+    const convo = convos.find(c => c._id === id);
+    if (!convo) return;
+
+    // Header
+    document.getElementById('chatConvName').textContent = `${convo.visitorName}${convo.visitorEmail ? ' — ' + convo.visitorEmail : ''}`;
+    document.getElementById('chatConvMeta').textContent = `${convo.messages.length} messages • Démarré le ${new Date(convo.createdAt).toLocaleDateString('fr')}`;
+    document.getElementById('btnCloseConv').style.display = convo.status !== 'closed' ? 'block' : 'none';
+    document.getElementById('btnDeleteConv').style.display = 'block';
+    document.getElementById('chatReplyBar').style.display = convo.status !== 'closed' ? 'block' : 'none';
+
+    // Quick replies
+    document.getElementById('quickReplies').innerHTML = QUICK_REPLIES.map(r => `
+      <button class="preset-chip" onclick="useQuickReply(this.dataset.text)" data-text="${r.replace(/"/g,'&quot;')}">${r.substring(0,30)}...</button>
+    `).join('');
+
+    // Messages
+    renderAdminMessages(convo.messages, convo.status);
+
+    // Auto poll every 5s
+    if (chatPollInterval) clearInterval(chatPollInterval);
+    chatPollInterval = setInterval(() => openChat(id), 5000);
+
+  } catch(e) {}
+}
+
+function renderAdminMessages(msgs, status) {
+  const container = document.getElementById('chatConvMessages');
+  container.innerHTML = msgs.map(m => `
+    <div style="display:flex;flex-direction:column;align-items:${m.from === 'admin' ? 'flex-end' : 'flex-start'}">
+      <div style="max-width:70%;padding:10px 14px;border-radius:${m.from === 'admin' ? '12px 12px 2px 12px' : '12px 12px 12px 2px'};
+        background:${m.from === 'admin' ? 'linear-gradient(135deg,rgba(255,62,0,0.25),rgba(255,140,0,0.15))' : 'var(--surface2)'};
+        border:1px solid ${m.from === 'admin' ? 'rgba(255,62,0,0.3)' : 'var(--border)'};
+        color:var(--text);font-size:0.9rem;line-height:1.5">
+        <div style="font-size:0.72rem;color:${m.from === 'admin' ? 'var(--accent2)' : 'var(--muted)'};margin-bottom:4px;font-weight:700;text-transform:uppercase;letter-spacing:1px">
+          ${m.from === 'admin' ? '🎵 MichiNo-' : '👤 Visiteur'}
+        </div>
+        ${m.text}
+        <div style="font-size:0.68rem;color:#555;margin-top:4px;text-align:right">
+          ${new Date(m.time).toLocaleTimeString('fr',{hour:'2-digit',minute:'2-digit'})}
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  if (status === 'closed') {
+    container.innerHTML += '<div style="text-align:center;color:var(--muted);padding:12px;font-size:0.85rem">⬛ Conversation fermée</div>';
+  }
+
+  container.scrollTop = container.scrollHeight;
+}
+
+async function sendAdminReply() {
+  const text = document.getElementById('adminReplyText').value.trim();
+  if (!text || !currentChatId) return;
+  document.getElementById('adminReplyText').value = '';
+  try {
+    await fetch(`/api/chat/admin/reply/${currentChatId}`, {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text })
+    });
+    await openChat(currentChatId);
+    loadChats();
+  } catch(e) {}
+}
+
+function useQuickReply(text) {
+  document.getElementById('adminReplyText').value = text;
+  document.getElementById('adminReplyText').focus();
+}
+
+async function closeConversation() {
+  if (!currentChatId || !confirm('Fermer cette conversation ?')) return;
+  await fetch(`/api/chat/admin/close/${currentChatId}`, {
+    method: 'PATCH', headers: { 'Authorization': 'Bearer ' + token }
+  });
+  loadChats();
+  openChat(currentChatId);
+}
+
+async function deleteConversation() {
+  if (!currentChatId || !confirm('Supprimer cette conversation ?')) return;
+  await fetch(`/api/chat/admin/${currentChatId}`, {
+    method: 'DELETE', headers: { 'Authorization': 'Bearer ' + token }
+  });
+  currentChatId = null;
+  document.getElementById('chatConvMessages').innerHTML = '<div style="text-align:center;color:var(--muted);padding:40px"><div style="font-size:3rem;margin-bottom:12px">💬</div><p>Sélectionnez une conversation</p></div>';
+  document.getElementById('chatReplyBar').style.display = 'none';
+  document.getElementById('btnCloseConv').style.display = 'none';
+  document.getElementById('btnDeleteConv').style.display = 'none';
+  loadChats();
+}
+
+// =============================================
+// 🎨 THEME CUSTOMIZER ENGINE
+// =============================================
+
+const THEME_COLORS = [
+  { id: 'bg',       label: 'Fond',         default: '#080808' },
+  { id: 'surface',  label: 'Surface',      default: '#111111' },
+  { id: 'surface2', label: 'Surface 2',    default: '#1a1a1a' },
+  { id: 'accent',   label: 'Couleur 1',    default: '#ff3e00' },
+  { id: 'accent2',  label: 'Couleur 2',    default: '#ff8c00' },
+  { id: 'text',     label: 'Texte',        default: '#f0f0f0' },
+  { id: 'muted',    label: 'Texte discret',default: '#888888' },
+  { id: 'border',   label: 'Bordure',      default: '#222222' },
+];
+
+const THEME_PRESETS = [
+  { name:'Défaut',     accent:'#ff3e00', accent2:'#ff8c00', bg:'#080808', surface:'#111111', surface2:'#1a1a1a', border:'#222222', text:'#f0f0f0', muted:'#888888' },
+  { name:'Nuit Bleue', accent:'#0099ff', accent2:'#00ccff', bg:'#050a12', surface:'#0a1422', surface2:'#0f1e30', border:'#1a2a3a', text:'#e0f0ff', muted:'#5588aa' },
+  { name:'Vert Jungle',accent:'#00e676', accent2:'#69f0ae', bg:'#030a03', surface:'#071507', surface2:'#0d200d', border:'#1a3a1a', text:'#e0ffe0', muted:'#558855' },
+  { name:'Or Royal',   accent:'#ffd700', accent2:'#ffb300', bg:'#080600', surface:'#120f00', surface2:'#1e1800', border:'#2e2500', text:'#fff8e0', muted:'#aa8800' },
+  { name:'Violet',     accent:'#cc00ff', accent2:'#ff00cc', bg:'#07000a', surface:'#120015', surface2:'#1a0022', border:'#280033', text:'#f0e0ff', muted:'#8855aa' },
+  { name:'Rouge Sang', accent:'#ff0033', accent2:'#ff4466', bg:'#0a0003', surface:'#150008', surface2:'#20000d', border:'#330011', text:'#ffe0e6', muted:'#aa4455' },
+  { name:'Cyan Cyber', accent:'#00ffcc', accent2:'#00ccaa', bg:'#020808', surface:'#041212', surface2:'#071c1c', border:'#0d2a2a', text:'#e0fffa', muted:'#449988' },
+  { name:'Blanc Pur',  accent:'#1a1a1a', accent2:'#444444', bg:'#f5f5f5', surface:'#ffffff', surface2:'#eeeeee', border:'#dddddd', text:'#111111', muted:'#666666' },
+];
+
+const BG_OPTIONS = [
+  { id:'none',      label:'Aucun',      value:'none',         icon:'⬛' },
+  { id:'gradient1', label:'Flammes',    value:'linear-gradient(135deg,#1a0800,#0a0000,#1a0500)', icon:'🔥' },
+  { id:'gradient2', label:'Océan',      value:'linear-gradient(135deg,#000a1a,#00060d,#001a2a)', icon:'🌊' },
+  { id:'gradient3', label:'Forêt',      value:'linear-gradient(135deg,#001a00,#00060a,#001a0a)', icon:'🌿' },
+  { id:'gradient4', label:'Galaxie',    value:'linear-gradient(135deg,#0a0015,#050010,#10001a)', icon:'🌌' },
+  { id:'gradient5', label:'Coucher',    value:'linear-gradient(135deg,#1a0a00,#100500,#0a0a00)', icon:'🌅' },
+  { id:'pattern1',  label:'Grille',     value:'repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(255,255,255,0.03) 39px,rgba(255,255,255,0.03) 40px),repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(255,255,255,0.03) 39px,rgba(255,255,255,0.03) 40px)', icon:'#️⃣' },
+  { id:'pattern2',  label:'Points',     value:'radial-gradient(circle,rgba(255,255,255,0.04) 1px,transparent 1px)', icon:'⚬' },
+];
+
+const FONTS = [
+  { id:'bebas',   name:'Bebas Neue', sample:'MichiNo-', import:'', css:"'Bebas Neue', cursive" },
+  { id:'rajdhani',name:'Rajdhani',   sample:'MichiNo-', import:'', css:"'Rajdhani', sans-serif" },
+  { id:'orbitron',name:'Orbitron',   sample:'MICHINO', import:'https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap', css:"'Orbitron', sans-serif" },
+  { id:'playfair',name:'Playfair',   sample:'MichiNo-', import:'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap', css:"'Playfair Display', serif" },
+  { id:'montserrat',name:'Montserrat',sample:'MICHINO', import:'https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap', css:"'Montserrat', sans-serif" },
+  { id:'oswald',  name:'Oswald',     sample:'MichiNo-', import:'https://fonts.googleapis.com/css2?family=Oswald:wght@700&display=swap', css:"'Oswald', sans-serif" },
+];
+
+const EFFECTS = [
+  { id:'glow',      label:'✨ Lueur Accent' },
+  { id:'glass',     label:'🪟 Effet Verre' },
+  { id:'grain',     label:'🎞️ Grain Film' },
+  { id:'scanlines', label:'📺 Scanlines' },
+  { id:'particles', label:'✦ Particules' },
+  { id:'animated',  label:'🌊 BG Animé' },
+];
+
+let currentTheme = JSON.parse(localStorage.getItem('michino_theme') || 'null') || {
+  colors: Object.fromEntries(THEME_COLORS.map(c => [c.id, c.default])),
+  bg: 'none', bgImg: '', bgOpacity: 30, bgBlur: 0,
+  font: 'bebas', borderRadius: 12, spacing: 16,
+  effects: [], presetName: 'Défaut'
+};
+
+function initThemePage() {
+  // Build color pickers
+  const cp = document.getElementById('colorPickers');
+  cp.innerHTML = THEME_COLORS.map(c => `
+    <div class="color-item">
+      <div class="color-swatch" style="background:${currentTheme.colors[c.id] || c.default}">
+        <div class="color-dot" id="dot-${c.id}" style="background:${currentTheme.colors[c.id] || c.default}"></div>
+        <input type="color" value="${currentTheme.colors[c.id] || c.default}" oninput="updateColor('${c.id}',this.value)" id="cp-${c.id}">
+      </div>
+      <div class="color-label">${c.label}</div>
+    </div>
+  `).join('');
+
+  // Build presets
+  const pg = document.getElementById('themePresetGrid');
+  pg.innerHTML = THEME_PRESETS.map(p => `
+    <div class="theme-preset-card ${currentTheme.presetName === p.name ? 'active' : ''}" onclick="applyThemePreset(${JSON.stringify(p).replace(/"/g,'&quot;')})">
+      <div class="theme-preview-bar" style="background:linear-gradient(90deg,${p.accent},${p.accent2})"></div>
+      <div class="theme-preview-body" style="background:${p.surface}">
+        <div class="theme-preview-title" style="color:${p.accent};font-family:'Bebas Neue',cursive">${p.name}</div>
+        <div class="theme-preview-sub" style="color:${p.muted}">● ● ●</div>
+      </div>
+    </div>
+  `).join('');
+
+  // Build bg options
+  const bo = document.getElementById('bgOptions');
+  bo.innerHTML = BG_OPTIONS.map(b => `
+    <div class="bg-option ${currentTheme.bg === b.id ? 'active' : ''}"
+      style="${b.id !== 'none' && b.id !== 'pattern1' && b.id !== 'pattern2' ? 'background:'+b.value : ''}"
+      onclick="applyBgOption('${b.id}','${b.value.replace(/'/g,'\\\'')}')" id="bg-${b.id}">
+      <span style="font-size:1.8rem">${b.icon}</span>
+      <span>${b.label}</span>
+    </div>
+  `).join('');
+
+  // Build fonts
+  const fo = document.getElementById('fontOptions');
+  fo.innerHTML = FONTS.map(f => `
+    <div class="font-option ${currentTheme.font === f.id ? 'active' : ''}" onclick="applyFont('${f.id}')" id="font-${f.id}">
+      <div class="name" style="font-family:${f.css}">${f.sample}</div>
+      <div class="sample">${f.name}</div>
+    </div>
+  `).join('');
+
+  // Build effects
+  const eo = document.getElementById('effectOptions');
+  eo.innerHTML = EFFECTS.map(e => `
+    <button class="preset-chip ${currentTheme.effects.includes(e.id) ? 'active' : ''}"
+      onclick="toggleEffect('${e.id}',this)" id="fx-${e.id}">${e.label}</button>
+  `).join('');
+
+  // Restore sliders
+  document.getElementById('bgOpacity').value = currentTheme.bgOpacity;
+  document.getElementById('bgOpacityVal').textContent = currentTheme.bgOpacity + '%';
+  document.getElementById('bgBlur').value = currentTheme.bgBlur;
+  document.getElementById('bgBlurVal').textContent = currentTheme.bgBlur + 'px';
+  document.getElementById('borderRadius').value = currentTheme.borderRadius;
+  document.getElementById('borderRadiusVal').textContent = currentTheme.borderRadius + 'px';
+  document.getElementById('spacing').value = currentTheme.spacing;
+  document.getElementById('spacingVal').textContent = currentTheme.spacing + 'px';
+
+  document.getElementById('themeInfo').textContent = `Thème : ${currentTheme.presetName} • Effets : ${currentTheme.effects.length > 0 ? currentTheme.effects.join(', ') : 'aucun'}`;
+
+  renderPreview();
+}
+
+function updateColor(id, val) {
+  currentTheme.colors[id] = val;
+  document.getElementById('dot-' + id).style.background = val;
+  document.querySelector(`#dot-${id}`).parentElement.style.background = val;
+  currentTheme.presetName = 'Personnalisé';
+  renderPreview();
+}
+
+function applyThemePreset(preset) {
+  currentTheme.colors = {
+    bg: preset.bg, surface: preset.surface, surface2: preset.surface2,
+    accent: preset.accent, accent2: preset.accent2,
+    text: preset.text, muted: preset.muted, border: preset.border
+  };
+  currentTheme.presetName = preset.name;
+  // Update color pickers
+  THEME_COLORS.forEach(c => {
+    const cp = document.getElementById('cp-' + c.id);
+    const dot = document.getElementById('dot-' + c.id);
+    if (cp) cp.value = currentTheme.colors[c.id];
+    if (dot) { dot.style.background = currentTheme.colors[c.id]; dot.parentElement.style.background = currentTheme.colors[c.id]; }
+  });
+  document.querySelectorAll('.theme-preset-card').forEach(el => el.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  document.getElementById('themeInfo').textContent = `Thème : ${preset.name}`;
+  renderPreview();
+}
+
+function applyBgOption(id, value) {
+  currentTheme.bg = id;
+  currentTheme.bgValue = value;
+  document.querySelectorAll('.bg-option').forEach(el => el.classList.remove('active'));
+  document.getElementById('bg-' + id).classList.add('active');
+  renderPreview();
+}
+
+function applyBgUrl() {
+  const url = document.getElementById('bgUrl').value.trim();
+  if (!url) return;
+  currentTheme.bg = 'custom';
+  currentTheme.bgImg = url;
+  renderPreview();
+}
+
+function uploadBg(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    currentTheme.bg = 'custom';
+    currentTheme.bgImg = e.target.result;
+    renderPreview();
+  };
+  reader.readAsDataURL(file);
+}
+
+function updateBgOpacity(val) {
+  currentTheme.bgOpacity = parseInt(val);
+  document.getElementById('bgOpacityVal').textContent = val + '%';
+  renderPreview();
+}
+
+function updateBgBlur(val) {
+  currentTheme.bgBlur = parseInt(val);
+  document.getElementById('bgBlurVal').textContent = val + 'px';
+  renderPreview();
+}
+
+function applyFont(id) {
+  currentTheme.font = id;
+  document.querySelectorAll('.font-option').forEach(el => el.classList.remove('active'));
+  document.getElementById('font-' + id).classList.add('active');
+  renderPreview();
+}
+
+function toggleEffect(id, btn) {
+  const idx = currentTheme.effects.indexOf(id);
+  if (idx === -1) { currentTheme.effects.push(id); btn.classList.add('active'); }
+  else { currentTheme.effects.splice(idx, 1); btn.classList.remove('active'); }
+  renderPreview();
+}
+
+function updateEffect(prop, val, unit) {
+  currentTheme[prop] = parseInt(val);
+  document.getElementById(prop + 'Val').textContent = val + unit;
+  renderPreview();
+}
+
+function renderPreview() {
+  const c = currentTheme.colors;
+  const pv = document.getElementById('livePreviewFrame');
+  const pvHeader = document.getElementById('pvHeader');
+  const pvBody = document.getElementById('pvBody');
+  const pvCards = document.getElementById('pvCards');
+
+  // Apply background
+  let bgStyle = `background-color:${c.bg};`;
+  if (currentTheme.bg === 'custom' && currentTheme.bgImg) {
+    bgStyle = `background-image:url(${currentTheme.bgImg});background-size:cover;background-position:center;`;
+  } else if (currentTheme.bg !== 'none') {
+    const bgOpt = BG_OPTIONS.find(b => b.id === currentTheme.bg);
+    if (bgOpt) bgStyle = `background:${bgOpt.value};`;
+  }
+  pv.style.cssText = bgStyle;
+
+  // Header
+  pvHeader.style.background = `${c.surface}dd`;
+  pvHeader.style.borderBottom = `2px solid ${c.accent}`;
+  document.getElementById('pvLogo').style.cssText = `font-family:'Bebas Neue',cursive;font-size:1.3rem;background:linear-gradient(135deg,${c.accent},${c.accent2});-webkit-background-clip:text;-webkit-text-fill-color:transparent;`;
+  const pvSearch = document.getElementById('pvSearch');
+  pvSearch.style.cssText = `height:20px;width:100px;border-radius:10px;background:${c.surface2};border:1px solid ${c.border}`;
+
+  // Body
+  pvBody.style.background = 'transparent';
+  document.getElementById('pvSection').style.cssText = `font-family:'Bebas Neue',cursive;font-size:0.75rem;letter-spacing:2px;color:${c.accent};margin-bottom:6px`;
+
+  // Cards
+  pvCards.innerHTML = [c.accent, c.accent2, c.surface2, c.surface].map((col,i) => `
+    <div style="width:50px;height:50px;border-radius:${Math.min(currentTheme.borderRadius,8)}px;background:${col};border:1px solid ${c.border}"></div>
+  `).join('');
+
+  // Glow effect
+  if (currentTheme.effects.includes('glow')) {
+    pv.style.boxShadow = `inset 0 0 30px ${c.accent}22`;
+  } else {
+    pv.style.boxShadow = '';
+  }
+}
+
+function saveAndApplyTheme() {
+  localStorage.setItem('michino_theme', JSON.stringify(currentTheme));
+  injectThemeCSS(currentTheme);
+  showAlert('imgAlert', '✅ Thème appliqué sur tout le site !', 'success');
+  // Show confirmation
+  const info = document.getElementById('themeInfo');
+  info.style.color = 'var(--success)';
+  info.textContent = '✅ Thème sauvegardé et appliqué !';
+  setTimeout(() => { info.style.color = ''; info.textContent = `Thème : ${currentTheme.presetName}`; }, 3000);
+}
+
+function injectThemeCSS(theme) {
+  let styleEl = document.getElementById('michino-theme-style');
+  if (!styleEl) { styleEl = document.createElement('style'); styleEl.id = 'michino-theme-style'; document.head.appendChild(styleEl); }
+
+  const c = theme.colors;
+  const font = FONTS.find(f => f.id === theme.font);
+  const fontImport = font && font.import ? `@import url('${font.import}');` : '';
+
+  let bgCSS = '';
+  if (theme.bg === 'custom' && theme.bgImg) {
+    bgCSS = `body::before { content:'';position:fixed;inset:0;background-image:url(${theme.bgImg});background-size:cover;background-position:center;opacity:${theme.bgOpacity/100};filter:blur(${theme.bgBlur}px);z-index:-1;pointer-events:none; }`;
+  } else if (theme.bg !== 'none') {
+    const bgOpt = BG_OPTIONS.find(b => b.id === theme.bg);
+    if (bgOpt) bgCSS = `body::before { content:'';position:fixed;inset:0;background:${bgOpt.value};opacity:${theme.bgOpacity/100};filter:blur(${theme.bgBlur}px);z-index:-1;pointer-events:none; }`;
+  }
+
+  let effectsCSS = '';
+  if (theme.effects.includes('glow')) effectsCSS += `.song-card:hover,.video-card:hover{box-shadow:0 0 20px ${c.accent}44;}`;
+  if (theme.effects.includes('glass')) effectsCSS += `.song-card,.video-card,.panel{backdrop-filter:blur(10px);background:${c.surface}88 !important;}`;
+  if (theme.effects.includes('grain')) effectsCSS += `body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:999;opacity:0.5;}`;
+  if (theme.effects.includes('animated')) effectsCSS += `@keyframes bgShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}body{background-size:400% 400% !important;animation:bgShift 15s ease infinite;}`;
+
+  styleEl.textContent = `
+    ${fontImport}
+    :root {
+      --bg: ${c.bg};
+      --surface: ${c.surface};
+      --surface2: ${c.surface2};
+      --accent: ${c.accent};
+      --accent2: ${c.accent2};
+      --text: ${c.text};
+      --muted: ${c.muted};
+      --border: ${c.border};
+    }
+    * { --radius: ${theme.borderRadius}px; }
+    .song-card, .video-card { border-radius: ${theme.borderRadius}px !important; }
+    .btn-download { border-radius: ${Math.min(theme.borderRadius, 8)}px !important; }
+    ${bgCSS}
+    ${effectsCSS}
+  `;
+}
+
+function resetTheme() {
+  if (!confirm('Réinitialiser le thème par défaut ?')) return;
+  currentTheme = {
+    colors: Object.fromEntries(THEME_COLORS.map(c => [c.id, c.default])),
+    bg: 'none', bgImg: '', bgOpacity: 30, bgBlur: 0,
+    font: 'bebas', borderRadius: 12, spacing: 16,
+    effects: [], presetName: 'Défaut'
+  };
+  localStorage.setItem('michino_theme', JSON.stringify(currentTheme));
+  injectThemeCSS(currentTheme);
+  initThemePage();
+}
+
+function exportTheme() {
+  const c = currentTheme.colors;
+  const css = `:root {\n  --bg: ${c.bg};\n  --surface: ${c.surface};\n  --surface2: ${c.surface2};\n  --accent: ${c.accent};\n  --accent2: ${c.accent2};\n  --text: ${c.text};\n  --muted: ${c.muted};\n  --border: ${c.border};\n}`;
+  navigator.clipboard.writeText(css).then(() => {
+    alert('✅ CSS copié dans le presse-papiers !');
+  });
+}
+
+// Init theme on page load
+if (currentTheme) injectThemeCSS(currentTheme);
+
+// Override showPage to init theme page and chat page
+const _origShowPage = showPage;
+showPage = function(page) {
+  _origShowPage(page);
+  if (page === 'theme') initThemePage();
+  if (page === 'chat') { loadChats(); if(chatPollInterval) clearInterval(chatPollInterval); }
+  if (page === 'seo') loadAuditResults();
+};
+
+// ════════════════════════════════════════════════════════════
+//  SEO GOOGLE IA — Dashboard
+// ════════════════════════════════════════════════════════════
+let auditData = null;
+let auditFilter = 'all';
+
+async function loadAuditResults() {
+  try {
+    const res  = await fetch('/api/seo/audit', { headers: { Authorization: 'Bearer ' + token } });
+    const data = await res.json();
+    if (data.score !== null && data.score !== undefined) {
+      auditData = data;
+      renderAudit(data);
+    } else {
+      document.getElementById('seoLastRun').textContent = data.message || 'Audit pas encore lancé.';
+    }
+  } catch (e) {
+    document.getElementById('seoLastRun').textContent = 'Erreur de chargement.';
+  }
+}
+
+async function launchAudit(applyFixes) {
+  document.getElementById('seoRunning').style.display = 'block';
+  document.getElementById('seoLastRun').textContent = '';
+  try {
+    await fetch('/api/seo/audit/run', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+      body: JSON.stringify({ applyFixes }),
+    });
+    // Attendre 3s puis recharger
+    await new Promise(r => setTimeout(r, 3000));
+    await loadAuditResults();
+  } finally {
+    document.getElementById('seoRunning').style.display = 'none';
+  }
+}
+
+function renderAudit(data) {
+  // Score
+  document.getElementById('seoScoreValue').textContent = data.score + '/100';
+  document.getElementById('seoScoreLabel').textContent  = data.scoreLabel || '';
+  document.getElementById('seoGaugePct').textContent    = data.score + '%';
+  document.getElementById('seoPassCount').textContent   = data.stats?.passed ?? '--';
+  document.getElementById('seoFailCount').textContent   = data.stats?.failed ?? '--';
+
+  // Jauge SVG
+  const offset = 352 - (352 * data.score / 100);
+  document.getElementById('seoGauge').style.strokeDashoffset = offset;
+  // Couleur selon score
+  const color = data.score >= 90 ? '#00cc66' : data.score >= 70 ? '#ffcc00' : data.score >= 50 ? '#ff8c00' : '#ff4444';
+  document.getElementById('seoGauge').style.stroke = color;
+  document.getElementById('seoGaugePct').style.color = color;
+
+  // Heure du dernier audit
+  if (data.lastRun) {
+    document.getElementById('seoLastRun').textContent =
+      'Dernier audit : ' + new Date(data.lastRun).toLocaleString('fr-FR') +
+      (data.nextScheduled ? ' · Prochain : ' + new Date(data.nextScheduled).toLocaleString('fr-FR') : '');
+  }
+
+  // Conseil IA
+  if (data.aiAdvice) {
+    document.getElementById('seoAiPanel').style.display = 'block';
+    document.getElementById('seoAiText').textContent = data.aiAdvice;
+  }
+
+  // Auto-fixes
+  if (data.autoFixed && data.autoFixed.length > 0) {
+    document.getElementById('seoFixesPanel').style.display = 'block';
+    document.getElementById('seoFixesList').innerHTML = data.autoFixed
+      .map(f => `<div style="padding:8px 12px;background:rgba(0,204,102,0.08);border-left:3px solid #00cc66;margin-bottom:6px;border-radius:4px;font-size:0.9rem">${f}</div>`)
+      .join('');
+  }
+
+  // Catégories
+  renderCategories(data.stats?.categories || {});
+
+  // Critères détaillés
+  renderCriteria(data.results || []);
+}
+
+function renderCategories(cats) {
+  const grid = document.getElementById('seoCategoryGrid');
+  const catEmojis = {
+    'Balises': '🏷️', 'Structure': '🏗️', 'Mobile': '📱', 'Social': '📣',
+    'Structuré': '🔢', 'Indexation': '🗂️', 'Performance': '⚡', 'Contenu': '📝'
+  };
+  grid.innerHTML = Object.entries(cats).map(([cat, stat]) => {
+    const pct  = Math.round((stat.passed / stat.total) * 100);
+    const col  = pct === 100 ? '#00cc66' : pct >= 60 ? '#ff8c00' : '#ff4444';
+    return `<div style="background:var(--surface);border:1px solid var(--border);border-top:3px solid ${col};border-radius:12px;padding:16px;text-align:center">
+      <div style="font-size:1.5rem">${catEmojis[cat] || '📌'}</div>
+      <div style="font-family:'Bebas Neue',cursive;font-size:1rem;letter-spacing:1px;margin:4px 0">${cat}</div>
+      <div style="font-size:1.6rem;font-weight:700;color:${col}">${stat.passed}/${stat.total}</div>
+      <div style="height:4px;background:#222;border-radius:2px;margin-top:8px">
+        <div style="height:100%;width:${pct}%;background:${col};border-radius:2px;transition:width 0.8s"></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderCriteria(results) {
+  const list = document.getElementById('seoCriteriaList');
+  const filtered = auditFilter === 'fail' ? results.filter(r => !r.passed)
+                 : auditFilter === 'pass' ? results.filter(r => r.passed)
+                 : results;
+
+  if (!filtered.length) {
+    list.innerHTML = '<div style="color:var(--muted);text-align:center;padding:20px">Aucun résultat pour ce filtre.</div>';
+    return;
+  }
+
+  list.innerHTML = filtered.map(r => `
+    <div style="display:flex;align-items:flex-start;gap:12px;padding:12px;border-bottom:1px solid var(--border);${!r.passed ? 'background:rgba(255,68,68,0.04)' : ''}">
+      <div style="font-size:1.3rem;flex-shrink:0;margin-top:2px">${r.passed ? '✅' : '❌'}</div>
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <span style="font-weight:700;font-size:0.95rem">${r.label}</span>
+          <span style="background:var(--surface2);color:var(--muted);padding:2px 8px;border-radius:10px;font-size:0.72rem;text-transform:uppercase;letter-spacing:1px">${r.category}</span>
+          <span style="color:var(--muted);font-size:0.75rem">Poids: ${r.weight}pts</span>
+        </div>
+        <div style="color:${r.passed ? 'var(--muted)' : '#ffaa55'};font-size:0.85rem;margin-top:4px">${r.detail || ''}</div>
+        ${r.fix && !r.passed ? `<div style="margin-top:6px;background:rgba(255,140,0,0.1);border-left:3px solid var(--accent2);padding:6px 10px;border-radius:4px;font-size:0.83rem;color:var(--accent2)">💡 Fix : ${r.fix}</div>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterCriteria(f) {
+  auditFilter = f;
+  if (auditData?.results) renderCriteria(auditData.results);
+}
+
+// ════════════════════════════════════════════════════════════
+//  IMPORTATEUR LIEN PLATEFORME
+// ════════════════════════════════════════════════════════════
+let lastAnalyzedUrl = '';
+let analyzedCoverUrl = '';  // Cover auto-détectée depuis la plateforme
+
+function onLinkInput(val) {
+  // Reset la preview si l'URL change
+  if (val !== lastAnalyzedUrl) {
+    document.getElementById('linkPreview').style.display = 'none';
+    document.getElementById('linkError').style.display = 'none';
+    analyzedCoverUrl = '';
+  }
+}
+
+async function analyzeLink() {
+  const url = document.getElementById('songLink').value.trim();
+  if (!url) {
+    showLinkError('Collez d'abord un lien de plateforme musicale');
+    return;
+  }
+
+  // Valider URL basique
+  try { new URL(url); } catch {
+    showLinkError('Lien invalide — vérifiez l'URL complète (doit commencer par https://)');
+    return;
+  }
+
+  document.getElementById('linkLoading').style.display = 'block';
+  document.getElementById('linkPreview').style.display = 'none';
+  document.getElementById('linkError').style.display   = 'none';
+  document.getElementById('btnAnalyze').disabled = true;
+  document.getElementById('btnAnalyze').textContent = '⏳ Analyse...';
+
+  try {
+    const res  = await fetch('/api/link-import', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ url }),
+    });
+    const data = await res.json();
+
+    if (!res.ok || data.error) {
+      showLinkError(data.error || 'Impossible d'extraire les informations depuis ce lien');
+      return;
+    }
+
+    // Remplir les champs du formulaire automatiquement
+    if (data.title)  document.getElementById('songTitle').value  = data.title;
+    if (data.artist) document.getElementById('songArtist').value = data.artist;
+
+    // Mémoriser la cover détectée
+    analyzedCoverUrl = data.cover || '';
+    lastAnalyzedUrl  = url;
+
+    // Afficher la preview
+    showLinkPreview(data);
+
+    // Feedback dans l'alerte globale
+    if (data.title || data.artist) {
+      showAlert('songAlert', `✅ Infos récupérées depuis ${data.platform.name} ! Vérifiez et publiez.`, 'success');
+    } else {
+      showAlert('songAlert', `⚠️ Lien détecté (${data.platform.name}) mais métadonnées non récupérées — remplissez manuellement.`, 'error');
+    }
+
+  } catch (e) {
+    showLinkError('Erreur réseau — vérifiez votre connexion');
+  } finally {
+    document.getElementById('linkLoading').style.display  = 'none';
+    document.getElementById('btnAnalyze').disabled = false;
+    document.getElementById('btnAnalyze').textContent = '🔍 Analyser';
+  }
+}
+
+function showLinkPreview(data) {
+  const p       = data.platform;
+  const preview = document.getElementById('linkPreview');
+
+  // Badge plateforme coloré
+  document.getElementById('linkPlatformBadge').innerHTML =
+    `<span style="background:${p.color};color:white;padding:2px 10px;border-radius:12px;font-size:0.72rem">${p.emoji} ${p.name}</span>`;
+
+  // Titre & artiste
+  document.getElementById('linkPreviewTitle').textContent  = data.title  || '(titre non détecté)';
+  document.getElementById('linkPreviewArtist').textContent = data.artist ? `par ${data.artist}` : '(artiste non détecté)';
+  document.getElementById('linkPreviewDuration').textContent = data.duration ? `⏱ ${data.duration}` : '';
+
+  // Cover
+  const coverEl = document.getElementById('linkCoverPreview');
+  if (data.cover) {
+    coverEl.innerHTML = `<img src="${data.cover}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='${p.emoji}'" alt="cover">`;
+  } else {
+    coverEl.textContent = p.emoji;
+  }
+
+  preview.style.display = 'block';
+}
+
+function showLinkError(msg) {
+  document.getElementById('linkLoading').style.display = 'none';
+  const el = document.getElementById('linkError');
+  el.style.display = 'block';
+  el.textContent   = '❌ ' + msg;
+}
+
+// Appui Entrée dans le champ lien → analyser
+document.addEventListener('DOMContentLoaded', () => {
+  const input = document.getElementById('songLink');
+  if (input) input.addEventListener('keypress', e => { if (e.key === 'Enter') analyzeLink(); });
+});
+
+// ════════════════════════════════════════════════════════════
+//  TAG VOCAL IA — Statut dans la page Music
+// ════════════════════════════════════════════════════════════
+async function loadVocalTagStatus() {
+  try {
+    const res  = await fetch('/api/vocal-tag/status');
+    const data = await res.json();
+    const statusEl = document.getElementById('vocalTagStatus');
+    const dotEl    = document.getElementById('vocalTagDot');
+    if (!statusEl) return;
+
+    if (data.enabled) {
+      const voiceType = data.hasElevenLabs ? '🤖 Voix IA ElevenLabs' : '🎵 Jingle musical (mode sans clé)';
+      const position  = { intro: 'en intro', outro: 'en outro', both: 'intro + outro' }[data.tagPosition] || 'en intro';
+      statusEl.textContent = `Actif — ${voiceType} · Texte: "${data.tagText}" · Position: ${position} · Cache: ${data.cacheReady ? 'prêt ✅' : 'à générer'}`;
+      dotEl.style.background = '#00cc66';
+    } else {
+      statusEl.textContent = 'ffmpeg absent — installez ffmpeg-static (npm install)';
+      dotEl.style.background = '#ff4444';
+    }
+  } catch {
+    const el = document.getElementById('vocalTagStatus');
+    if (el) el.textContent = 'Statut non disponible';
+  }
+}
+
+// Afficher le statut vocal quand on va sur la page Music
+const _origShowPage2 = showPage;
+showPage = function(page) {
+  _origShowPage2(page);
+  if (page === 'music') loadVocalTagStatus();
+};
+
+// Charger au démarrage si on est sur music
+if (document.getElementById('page-music')?.style.display !== 'none') {
+  loadVocalTagStatus();
+}
+
+// Style spinner
+const spinStyle = document.createElement('style');
+spinStyle.textContent = '@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}';
+document.head.appendChild(spinStyle);
+
+
+// ════════════════════════════════════════════════════════════
+//  ANALYTICS · AUDIT LOG · CHAT POLLING · DRAG-DROP REORDER
+// ════════════════════════════════════════════════════════════
+
+let _analyticsData = null;
+let _chartActivity = null, _chartGenre = null;
+
+async function loadAnalytics() {
+  const token = localStorage.getItem('michino_token');
+  if (!token) return;
+  try {
+    const data = await (await fetch('/api/admin/analytics', {
+      headers: { Authorization: 'Bearer ' + token }
+    })).json();
+    _analyticsData = data;
+
+    // KPIs
+    const fmt = n => n > 999 ? (n/1000).toFixed(1)+'K' : n;
+    document.getElementById('kpiSongs').textContent     = data.totals.songs;
+    document.getElementById('kpiVideos').textContent    = data.totals.videos;
+    document.getElementById('kpiPlays').textContent     = fmt(data.totals.plays);
+    document.getElementById('kpiDownloads').textContent = fmt(data.totals.downloads);
+    document.getElementById('kpiViews').textContent     = fmt(data.totals.views);
+
+    // Chart Activity
+    const actCtx = document.getElementById('chartActivity')?.getContext('2d');
+    if (actCtx) {
+      if (_chartActivity) _chartActivity.destroy();
+      _chartActivity = new Chart(actCtx, {
+        type: 'line',
+        data: {
+          labels: data.dailyData.slice(-14).map(d => d.date.slice(5)),
+          datasets: [
+            {
+              label: 'Téléchargements',
+              data: data.dailyData.slice(-14).map(d => d.downloads),
+              borderColor: '#ff3e00', backgroundColor: 'rgba(255,62,0,.12)',
+              fill: true, tension: .4, pointRadius: 3,
+            },
+            {
+              label: 'Écoutes',
+              data: data.dailyData.slice(-14).map(d => d.plays),
+              borderColor: '#ff8c00', backgroundColor: 'rgba(255,140,0,.08)',
+              fill: true, tension: .4, pointRadius: 3,
+            }
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { labels: { color: '#aaa', font: { size: 11 } } } },
+          scales: {
+            x: { ticks: { color: '#666', font: { size: 10 } }, grid: { color: '#1a1a1a' } },
+            y: { ticks: { color: '#666', font: { size: 10 } }, grid: { color: '#1a1a1a' }, beginAtZero: true }
+          }
+        }
+      });
+    }
+
+    // Chart Genre
+    const genCtx = document.getElementById('chartGenre')?.getContext('2d');
+    if (genCtx) {
+      if (_chartGenre) _chartGenre.destroy();
+      const COLORS = ['#ff3e00','#ff8c00','#ffd000','#00cc66','#0088ff','#cc44ff','#ff4488','#44ffcc'];
+      _chartGenre = new Chart(genCtx, {
+        type: 'doughnut',
+        data: {
+          labels: data.genreChart.map(g => g.genre),
+          datasets: [{ data: data.genreChart.map(g => g.count), backgroundColor: COLORS, borderWidth: 0 }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'right', labels: { color: '#aaa', font: { size: 11 }, boxWidth: 12 } }
+          }
+        }
+      });
+    }
+
+    // Top songs table
+    const topEl = document.getElementById('topSongsTable');
+    if (topEl) {
+      topEl.innerHTML = `<table style="width:100%;border-collapse:collapse">
+        <thead><tr>
+          <th style="text-align:left;padding:8px 12px;color:var(--muted);font-size:.78rem;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border)">#</th>
+          <th style="text-align:left;padding:8px 12px;color:var(--muted);font-size:.78rem;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border)">Titre</th>
+          <th style="text-align:left;padding:8px 12px;color:var(--muted);font-size:.78rem;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border)">Artiste</th>
+          <th style="text-align:right;padding:8px 12px;color:var(--muted);font-size:.78rem;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border)">⬇ DL</th>
+          <th style="text-align:right;padding:8px 12px;color:var(--muted);font-size:.78rem;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border)">▶ Écoutes</th>
+        </tr></thead>
+        <tbody>
+          ${data.topSongs.map((s,i) => `<tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:10px 12px;color:var(--muted);font-size:.85rem">${i+1}</td>
+            <td style="padding:10px 12px;font-weight:600;font-size:.88rem;max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${s.title}</td>
+            <td style="padding:10px 12px;color:var(--muted);font-size:.85rem">${s.artist}</td>
+            <td style="padding:10px 12px;text-align:right;color:var(--accent2);font-weight:700">${s.downloads}</td>
+            <td style="padding:10px 12px;text-align:right;color:#aaa;font-size:.85rem">${s.plays}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>`;
+    }
+
+    // Top artists
+    const artsEl = document.getElementById('topArtistsList');
+    if (artsEl) {
+      artsEl.innerHTML = data.topArtists.map((a, i) => `
+        <div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--border)">
+          <div style="font-family:'Bebas Neue',cursive;font-size:1.6rem;color:${i===0?'#ffd000':i===1?'#ccc':'#cd7f32'};width:28px;text-align:center">${i+1}</div>
+          <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0">🎤</div>
+          <div style="flex:1">
+            <div style="font-weight:700">${a.name}</div>
+            <div style="font-size:.78rem;color:var(--muted)">${a.songs} titre${a.songs>1?'s':''}</div>
+          </div>
+          <div style="text-align:right">
+            <div style="color:var(--accent2);font-weight:700">${a.downloads} DL</div>
+            <div style="font-size:.76rem;color:var(--muted)">${a.plays} écoutes</div>
+          </div>
+        </div>`).join('');
+    }
+
+    // Audit log
+    renderAuditLog(data.auditLogs);
+
+  } catch(e) {
+    console.error('Analytics error:', e);
+  }
+}
+
+function renderAuditLog(logs) {
+  const el = document.getElementById('auditLogList');
+  if (!el) return;
+  if (!logs || !logs.length) {
+    el.innerHTML = '<div style="text-align:center;padding:24px;color:var(--muted)">Aucune action enregistrée</div>';
+    return;
+  }
+  const actionIcon = {
+    'song.upload': '🎵', 'song.delete': '🗑️', 'video.upload': '🎬', 'video.delete': '🗑️',
+    'songs.reorder': '↕️',
+  };
+  el.innerHTML = `<table style="width:100%;border-collapse:collapse">
+    <thead><tr>
+      <th style="text-align:left;padding:8px 12px;color:var(--muted);font-size:.75rem;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border)">Action</th>
+      <th style="text-align:left;padding:8px 12px;color:var(--muted);font-size:.75rem;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border)">Cible</th>
+      <th style="text-align:left;padding:8px 12px;color:var(--muted);font-size:.75rem;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border)">Détails</th>
+      <th style="text-align:right;padding:8px 12px;color:var(--muted);font-size:.75rem;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border)">Date</th>
+    </tr></thead>
+    <tbody>
+      ${logs.map(l => `<tr style="border-bottom:1px solid var(--border)">
+        <td style="padding:9px 12px;white-space:nowrap">
+          <span style="margin-right:6px">${actionIcon[l.action]||'⚙️'}</span>
+          <span style="font-size:.82rem;color:var(--accent2);font-weight:600">${l.action}</span>
+        </td>
+        <td style="padding:9px 12px;font-size:.85rem;max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${l.target||'–'}</td>
+        <td style="padding:9px 12px;font-size:.8rem;color:var(--muted)">${l.details||''}</td>
+        <td style="padding:9px 12px;text-align:right;font-size:.78rem;color:var(--muted);white-space:nowrap">${new Date(l.createdAt).toLocaleString('fr',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</td>
+      </tr>`).join('')}
+    </tbody>
+  </table>`;
+}
+
+// ── Chat real-time polling (badge unread) ─────────────────────
+let _chatPollAdmin = null;
+let _chatLastCount = 0;
+let _chatCurrentConvoId = null;
+
+function startChatPolling() {
+  if (_chatPollAdmin) return;
+  _chatPollAdmin = setInterval(async () => {
+    const token = localStorage.getItem('michino_token');
+    if (!token) return;
+    try {
+      const convos = await (await fetch('/api/chat/admin/all', { headers: { Authorization: 'Bearer ' + token } })).json();
+      const totalOpen = convos.filter(c => c.status === 'open').length;
+      const badge = document.getElementById('chatUnreadBadge');
+      if (badge) {
+        badge.style.display = totalOpen > 0 ? 'inline-block' : 'none';
+        badge.textContent = totalOpen > 9 ? '9+' : String(totalOpen);
+      }
+      // Si on est sur la page chat, refresh en arrière-plan
+      if (document.getElementById('page-chat')?.style.display !== 'none') {
+        renderChatList(convos);
+      }
+    } catch {}
+  }, 8000);
+}
+
+// ── Quick reply templates ─────────────────────────────────────
+const QUICK_REPLIES = [
+  '✅ Merci pour votre message, on revient vers vous très vite !',
+  '🎵 Le son sera disponible au téléchargement très prochainement.',
+  '📱 Pour toute collaboration, envoyez un email à contact@michino.com',
+  '🎬 La vidéo est disponible sur YouTube, lien dans la bio.',
+];
+
+function injectQuickReplies() {
+  const bar = document.getElementById('chatReplyBar');
+  if (!bar || document.getElementById('quickRepliesRow')) return;
+  const row = document.createElement('div');
+  row.id = 'quickRepliesRow';
+  row.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;padding:8px 16px 0;border-top:1px solid var(--border);';
+  QUICK_REPLIES.forEach(text => {
+    const btn = document.createElement('button');
+    btn.textContent = text.length > 40 ? text.slice(0,40)+'…' : text;
+    btn.title = text;
+    btn.style.cssText = 'background:var(--surface2);border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:5px 10px;font-size:.74rem;cursor:pointer;transition:all .15s;font-family:'Rajdhani',sans-serif;';
+    btn.onmouseenter = () => { btn.style.borderColor='var(--accent)'; btn.style.color='var(--text)'; };
+    btn.onmouseleave = () => { btn.style.borderColor='var(--border)'; btn.style.color='var(--muted)'; };
+    btn.onclick = () => {
+      const input = document.getElementById('adminReplyInput');
+      if (input) { input.value = text; input.focus(); }
+    };
+    row.appendChild(btn);
+  });
+  bar.parentNode.insertBefore(row, bar);
+}
+
+// ── Drag & Drop reorder songs ──────────────────────────────────
+let _sortableInstance = null;
+
+function initDragDrop() {
+  const el = document.getElementById('manageSongsList');
+  if (!el || _sortableInstance) return;
+  _sortableInstance = Sortable.create(el, {
+    animation: 150,
+    handle: '.drag-handle',
+    ghostClass: 'sortable-ghost',
+    onEnd: async function() {
+      const token = localStorage.getItem('michino_token');
+      if (!token) return;
+      const items = [...el.querySelectorAll('[data-song-id]')];
+      const order = items.map((item, idx) => ({ id: item.dataset.songId, order: idx }));
+      try {
+        await fetch('/api/admin/reorder', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+          body: JSON.stringify({ order })
+        });
+        showAdminToast('✅ Ordre sauvegardé');
+      } catch { showAdminToast('❌ Erreur lors de la sauvegarde'); }
+    }
+  });
+}
+
+function showAdminToast(msg) {
+  let t = document.getElementById('adminToast');
+  if (!t) { t = document.createElement('div'); t.id = 'adminToast'; t.style.cssText = 'position:fixed;bottom:20px;right:20px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:10px 18px;font-size:.85rem;z-index:9999;opacity:0;transition:opacity .2s;pointer-events:none;'; document.body.appendChild(t); }
+  t.textContent = msg; t.style.opacity = '1';
+  setTimeout(() => { t.style.opacity = '0'; }, 2500);
+}
+
+// ── Override showPage pour analytics + drag-drop ──────────────
+const _origShowPageFinal = showPage;
+showPage = function(page) {
+  _origShowPageFinal(page);
+  if (page === 'analytics') loadAnalytics();
+  if (page === 'audit') { if (_analyticsData) renderAuditLog(_analyticsData.auditLogs); else loadAnalytics(); }
+  if (page === 'chat') setTimeout(injectQuickReplies, 500);
+  if (page === 'manage') setTimeout(initDragDrop, 400);
+};
+
+// ── Patch renderManageSongs pour ajouter drag-handle ──────────
+const _origRenderManage = window.renderManageSongs;
+
+function patchManageRender() {
+  const el = document.getElementById('manageSongs');
+  if (!el) return;
+  const obs = new MutationObserver(() => {
+    const grid = el.querySelector('[id]');
+    // Créer un wrapper sortable si pas encore présent
+    const cards = el.querySelectorAll('.manage-item, [data-id]');
+    if (cards.length && !document.getElementById('manageSongsList')) {
+      const wrapper = document.createElement('div');
+      wrapper.id = 'manageSongsList';
+      cards.forEach(c => {
+        c.dataset.songId = c.dataset.id || c.getAttribute('data-id') || '';
+        // Add drag handle
+        if (!c.querySelector('.drag-handle')) {
+          const h = document.createElement('span');
+          h.className = 'drag-handle';
+          h.textContent = '⠿';
+          h.style.cssText = 'cursor:grab;color:var(--muted);font-size:1.2rem;margin-right:8px;user-select:none;flex-shrink:0;';
+          c.insertBefore(h, c.firstChild);
+        }
+        wrapper.appendChild(c);
+      });
+      el.appendChild(wrapper);
+      initDragDrop();
+    }
+  });
+  obs.observe(el, { childList: true, subtree: true });
+}
+
+
+
+// ════════════════════════════════════════════════════════════
+//  NOTIFICATIONS + MANAGE SEARCH
+// ════════════════════════════════════════════════════════════
+
+async function loadNotificationsPage() {
+  const token = localStorage.getItem('michino_token');
+  if (!token) return;
+  try {
+    const res = await fetch('/api/notifications/stats', { headers: { Authorization: 'Bearer ' + token } });
+    const d   = await res.json();
+    document.getElementById('notifPushCount').textContent  = d.push  || 0;
+    document.getElementById('notifEmailCount').textContent = d.email || 0;
+  } catch {}
+  // Load email list
+  try {
+    const res = await fetch('/api/notifications/email-list', { headers: { Authorization: 'Bearer ' + localStorage.getItem('michino_token') } });
+    const d   = await res.json();
+    const el  = document.getElementById('emailSubList');
+    if (!el) return;
+    if (!d.subs || !d.subs.length) {
+      el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted)">Aucun inscrit pour l'instant</div>';
+      return;
+    }
+    el.innerHTML = `<div style="font-size:.82rem;color:var(--muted);margin-bottom:10px">${d.total} inscrits actifs</div>
+      <table style="width:100%;border-collapse:collapse;font-size:.85rem">
+        <thead><tr>
+          <th style="text-align:left;padding:8px;border-bottom:1px solid var(--border);color:var(--muted)">Email</th>
+          <th style="text-align:left;padding:8px;border-bottom:1px solid var(--border);color:var(--muted)">Date</th>
+        </tr></thead>
+        <tbody>
+          ${d.subs.map(s => `<tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:8px">${s.email}</td>
+            <td style="padding:8px;color:var(--muted)">${new Date(s.createdAt).toLocaleDateString('fr')}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>`;
+  } catch {}
+}
+
+async function sendPushNotif() {
+  const token = localStorage.getItem('michino_token');
+  const title = document.getElementById('pushTitle')?.value.trim();
+  const body  = document.getElementById('pushBody')?.value.trim();
+  const url   = document.getElementById('pushUrl')?.value.trim();
+  const alertEl = document.getElementById('pushAlert');
+  if (!title || !body) { alertEl.textContent = '❗ Titre et message requis'; alertEl.style.cssText = 'display:block;background:rgba(255,68,68,.1);border:1px solid rgba(255,68,68,.3);color:#ff6666;padding:10px 14px;border-radius:8px;margin-bottom:12px'; return; }
+  const btn = event.target; btn.disabled = true; btn.textContent = '⏳ Envoi...';
+  try {
+    const res = await fetch('/api/admin/push-notify', {
+      method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+      body: JSON.stringify({ title, body, url: url || '/' }),
+    });
+    const d = await res.json();
+    alertEl.textContent = d.message || '✅ Envoyé !';
+    alertEl.style.cssText = 'display:block;background:rgba(0,204,102,.08);border:1px solid rgba(0,204,102,.25);color:#00cc66;padding:10px 14px;border-radius:8px;margin-bottom:12px';
+    if (res.ok) { document.getElementById('pushTitle').value=''; document.getElementById('pushBody').value=''; }
+  } catch { alertEl.textContent = '❌ Erreur réseau'; alertEl.style.cssText = 'display:block;background:rgba(255,68,68,.1);border:1px solid rgba(255,68,68,.3);color:#ff6666;padding:10px 14px;border-radius:8px;margin-bottom:12px'; }
+  finally { btn.disabled=false; btn.textContent='🔔 Envoyer à tous les abonnés'; }
+}
+
+// ── Manage search + filter ─────────────────────────────────────
+let _allManageSongs = [], _allManageVideos = [];
+
+function cacheManageContent() {
+  const songs  = document.querySelectorAll('#manageSongs [data-id]');
+  const videos = document.querySelectorAll('#manageVideos [data-id]');
+  if (songs.length) _allManageSongs  = [...songs].map(el => ({ el, title: el.dataset.title||'', artist: el.dataset.artist||'', genre: el.dataset.genre||'' }));
+  if (videos.length) _allManageVideos = [...videos].map(el => ({ el, title: el.dataset.title||'', artist: el.dataset.artist||'' }));
+}
+
+function filterManageContent() {
+  if (!_allManageSongs.length && !_allManageVideos.length) cacheManageContent();
+  const q    = (document.getElementById('manageSearch')?.value||'').toLowerCase().trim();
+  const genre= (document.getElementById('manageGenreFilter')?.value||'');
+  let songs=0, videos=0;
+  _allManageSongs.forEach(({ el, title, artist, genre: g }) => {
+    const match = (!q || title.toLowerCase().includes(q) || artist.toLowerCase().includes(q)) &&
+                  (!genre || g.toLowerCase() === genre.toLowerCase());
+    el.style.display = match ? '' : 'none';
+    if (match) songs++;
+  });
+  _allManageVideos.forEach(({ el, title, artist }) => {
+    const match = !q || title.toLowerCase().includes(q) || artist.toLowerCase().includes(q);
+    el.style.display = match ? '' : 'none';
+    if (match) videos++;
+  });
+  const stats = document.getElementById('manageStats');
+  if (stats) stats.textContent = `${songs} sons · ${videos} vidéos affichés`;
+}
+
+// ── Patch showPage pour notifications ─────────────────────────
+const _origShowPageNotif = showPage;
+showPage = function(page) {
+  _origShowPageNotif(page);
+  if (page === 'notifications') loadNotificationsPage();
+  if (page === 'manage') setTimeout(() => { cacheManageContent(); filterManageContent(); }, 600);
+};
+
+// Sortable ghost style
+const sortStyle = document.createElement('style');
+sortStyle.textContent = '.sortable-ghost{opacity:.4;background:rgba(255,62,0,.1) !important;border-color:var(--accent) !important;}';
+document.head.appendChild(sortStyle);
+
+
+
+// ════════════════════════════════════════════════════════════
+//  SUBSCRIBERS · COMMENTS ADMIN · PUSH ADMIN · MANAGE SEARCH
+// ════════════════════════════════════════════════════════════
+
+let _manageSongsAll = [];
+let _manageVideosAll = [];
+
+// ── Manage search ─────────────────────────────────────────────
+function filterManageSongs(q) {
+  const filtered = q ? _manageSongsAll.filter(s =>
+    s.title.toLowerCase().includes(q.toLowerCase()) ||
+    s.artist.toLowerCase().includes(q.toLowerCase())
+  ) : _manageSongsAll;
+  renderManageSongsFiltered(filtered);
+}
+function filterManageVideos(q) {
+  const filtered = q ? _manageVideosAll.filter(v =>
+    v.title.toLowerCase().includes(q.toLowerCase()) ||
+    v.artist.toLowerCase().includes(q.toLowerCase())
+  ) : _manageVideosAll;
+  renderManageVideosFiltered(filtered);
+}
+
+function renderManageSongsFiltered(songs) {
+  const el = document.getElementById('manageSongs');
+  if (!el) return;
+  el.innerHTML = songs.length ? songs.map(s => `
+    <div class="content-item" data-id="${s._id}" data-song-id="${s._id}">
+      <span class="drag-handle" style="cursor:grab;color:var(--muted);font-size:1.2rem;margin-right:8px;user-select:none;flex-shrink:0">⠿</span>
+      ${s.coverImage ? `<img src="${s.coverImage}" style="width:48px;height:48px;border-radius:6px;object-fit:cover" alt="${s.title}">` : '<div class="content-thumb" aria-hidden="true">🎵</div>'}
+      <div class="content-info">
+        <div class="content-title">${s.title}</div>
+        <div class="content-meta">${s.artist} · ⬇ ${s.downloads} · ▶ ${s.plays||0}
+          ${s.publishAt && new Date(s.publishAt) > new Date() ? '<span style="background:rgba(255,140,0,.2);color:var(--accent2);border-radius:6px;padding:1px 6px;font-size:.7rem;margin-left:4px">⏰ Programmé</span>' : ''}
+          ${s.waveform?.length ? '<span style="color:#00cc66;font-size:.7rem;margin-left:4px">〰 Waveform</span>' : ''}
+        </div>
+      </div>
+      <div class="content-actions">
+        <button class="btn-small btn btn-danger" onclick="deleteSong('${s._id}')" aria-label="Supprimer ${s.title}">🗑</button>
+      </div>
+    </div>`).join('') : '<p style="color:var(--muted);padding:12px">Aucune chanson</p>';
+  _manageSongsAll = _manageSongsAll.length ? _manageSongsAll : songs;
+}
+
+function renderManageVideosFiltered(videos) {
+  const el = document.getElementById('manageVideos');
+  if (!el) return;
+  el.innerHTML = videos.length ? videos.map(v => `
+    <div class="content-item" data-id="${v._id}">
+      ${v.thumbnail ? `<img src="${v.thumbnail}" style="width:48px;height:48px;border-radius:6px;object-fit:cover" alt="${v.title}">` : '<div class="content-thumb" aria-hidden="true">🎬</div>'}
+      <div class="content-info">
+        <div class="content-title">${v.title}</div>
+        <div class="content-meta">${v.artist} · 👁 ${v.views||0}</div>
+      </div>
+      <div class="content-actions">
+        <button class="btn-small btn btn-danger" onclick="deleteVideo('${v._id}')" aria-label="Supprimer ${v.title}">🗑</button>
+      </div>
+    </div>`).join('') : '<p style="color:var(--muted);padding:12px">Aucune vidéo</p>';
+}
+
+// Override loadManage
+const _origLoadManage = loadManage;
+window.loadManage = async function() {
+  try {
+    const [songsRes, videosRes] = await Promise.all([
+      fetch('/api/songs?limit=200'), fetch('/api/videos?limit=200')
+    ]);
+    const sData = await songsRes.json();
+    const vData = await videosRes.json();
+    _manageSongsAll  = sData.songs  || sData || [];
+    _manageVideosAll = vData.videos || vData || [];
+    renderManageSongsFiltered(_manageSongsAll);
+    renderManageVideosFiltered(_manageVideosAll);
+    setTimeout(initDragDrop, 200);
+  } catch(e) { console.error('loadManage error:', e); }
+};
+
+// ── Subscribers ───────────────────────────────────────────────
+async function loadSubscribers() {
+  const t = localStorage.getItem('michino_token');
+  if (!t) return;
+  try {
+    const data = await (await fetch('/api/admin/subscribers', { headers: { Authorization: 'Bearer ' + t } })).json();
+    const subs = data.subscribers || [];
+    document.getElementById('subsTotal').textContent = subs.length;
+    const badge = document.getElementById('subCountBadge');
+    if (badge) badge.textContent = subs.length ? `(${subs.length})` : '';
+    const el = document.getElementById('subsList');
+    if (!el) return;
+    if (!subs.length) { el.innerHTML = '<p style="color:var(--muted);padding:12px">Aucun abonné</p>'; return; }
+    el.innerHTML = `<table style="width:100%;border-collapse:collapse">
+      <thead><tr>
+        <th style="text-align:left;padding:8px 12px;color:var(--muted);font-size:.75rem;text-transform:uppercase;border-bottom:1px solid var(--border)">Prénom</th>
+        <th style="text-align:left;padding:8px 12px;color:var(--muted);font-size:.75rem;text-transform:uppercase;border-bottom:1px solid var(--border)">Email</th>
+        <th style="text-align:right;padding:8px 12px;color:var(--muted);font-size:.75rem;text-transform:uppercase;border-bottom:1px solid var(--border)">Date</th>
+      </tr></thead>
+      <tbody>${subs.map(s => `<tr style="border-bottom:1px solid var(--border)">
+        <td style="padding:9px 12px;font-size:.85rem">${s.name||'–'}</td>
+        <td style="padding:9px 12px;font-size:.85rem;color:var(--muted)">${s.email}</td>
+        <td style="padding:9px 12px;text-align:right;font-size:.78rem;color:var(--muted)">${new Date(s.createdAt).toLocaleDateString('fr')}</td>
+      </tr>`).join('')}</tbody></table>`;
+  } catch(e) { console.error(e); }
+}
+
+function exportSubscribers() {
+  const el = document.getElementById('subsList');
+  if (!el) return;
+  const rows = [...el.querySelectorAll('tbody tr')];
+  const csv  = 'Prénom,Email,Date
+' + rows.map(r => {
+    const cells = [...r.querySelectorAll('td')].map(td => `"${td.textContent.trim()}"`);
+    return cells.join(',');
+  }).join('
+');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = `michino-subscribers-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+}
+
+// ── Comments admin ────────────────────────────────────────────
+async function loadAdminComments() {
+  const t = localStorage.getItem('michino_token');
+  if (!t) return;
+  try {
+    const comments = await (await fetch('/api/admin/comments', { headers: { Authorization: 'Bearer ' + t } })).json();
+    const el = document.getElementById('adminCommentsList');
+    if (!el) return;
+    if (!comments.length) { el.innerHTML = '<p style="color:var(--muted);padding:12px">Aucun commentaire</p>'; return; }
+    el.innerHTML = `<table style="width:100%;border-collapse:collapse">
+      <thead><tr>
+        <th style="text-align:left;padding:8px 12px;color:var(--muted);font-size:.75rem;text-transform:uppercase;border-bottom:1px solid var(--border)">Chanson</th>
+        <th style="text-align:left;padding:8px 12px;color:var(--muted);font-size:.75rem;text-transform:uppercase;border-bottom:1px solid var(--border)">Auteur</th>
+        <th style="text-align:left;padding:8px 12px;color:var(--muted);font-size:.75rem;text-transform:uppercase;border-bottom:1px solid var(--border)">Commentaire</th>
+        <th style="padding:8px 12px;border-bottom:1px solid var(--border)"></th>
+      </tr></thead>
+      <tbody>${comments.map(c => `<tr style="border-bottom:1px solid var(--border)" id="acmt-${c._id}">
+        <td style="padding:9px 12px;font-size:.82rem;color:var(--accent2)">${c.songId?.title||'–'}</td>
+        <td style="padding:9px 12px;font-size:.82rem;font-weight:700">${c.name}</td>
+        <td style="padding:9px 12px;font-size:.82rem;color:var(--muted);max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.text}</td>
+        <td style="padding:9px 12px;text-align:right">
+          <button class="btn btn-danger btn-small" onclick="deleteAdminComment('${c._id}')" style="font-size:.72rem;padding:4px 8px" aria-label="Supprimer ce commentaire">🗑</button>
+        </td>
+      </tr>`).join('')}</tbody></table>`;
+  } catch(e) { console.error(e); }
+}
+
+async function deleteAdminComment(id) {
+  if (!confirm('Supprimer ce commentaire ?')) return;
+  const t = localStorage.getItem('michino_token');
+  await fetch(`/api/admin/comments/${id}`, { method: 'DELETE', headers: { Authorization: 'Bearer ' + t } });
+  document.getElementById('acmt-' + id)?.remove();
+}
+
+// ── Push admin ────────────────────────────────────────────────
+const PUSH_TEMPLATES = [
+  { title: '🎵 Nouveau son disponible !', body: 'Un nouveau morceau vient d'être publié sur MichiNo-' },
+  { title: '🎬 Nouveau clip en ligne !',   body: 'Regardez le nouveau clip dès maintenant' },
+  { title: '🔥 Top 10 mis à jour',         body: 'Découvrez les sons les plus téléchargés cette semaine' },
+  { title: '🎉 Contenu exclusif',          body: 'Du contenu exclusif vous attend sur MichiNo-' },
+];
+
+async function loadPushAdmin() {
+  const t = localStorage.getItem('michino_token');
+  if (!t) return;
+  try {
+    const data = await (await fetch('/api/admin/analytics', { headers: { Authorization: 'Bearer ' + t } })).json();
+    const pc = document.getElementById('pushSubsCount');
+    if (pc) pc.textContent = data.totals?.pushSubs || 0;
+    const vs = document.getElementById('vapidStatus');
+    if (vs) vs.textContent = process.env?.VAPID_PUBLIC_KEY ? 'Configuré ✅' : 'Non configuré ⚠️';
+  } catch {}
+  // Render templates
+  const tmpl = document.getElementById('pushTemplates');
+  if (tmpl) {
+    tmpl.innerHTML = PUSH_TEMPLATES.map(t => `
+      <button onclick="fillPushTemplate(${JSON.stringify(t.title).replace(/"/g,'&quot;')}, ${JSON.stringify(t.body).replace(/"/g,'&quot;')})"
+        style="background:var(--surface2);border:1px solid var(--border);color:var(--text2);border-radius:8px;padding:8px 14px;font-size:.8rem;cursor:pointer;transition:all .15s;font-family:'Rajdhani',sans-serif"
+        onmouseenter="this.style.borderColor='var(--accent)'" onmouseleave="this.style.borderColor='var(--border)'"
+        aria-label="Utiliser ce template de notification">${t.title}</button>`).join('');
+  }
+}
+
+function fillPushTemplate(title, body) {
+  const ti = document.getElementById('pushTitle');
+  const bi = document.getElementById('pushBody');
+  if (ti) ti.value = title;
+  if (bi) bi.value = body;
+}
+
+function previewPushTitle() {
+  const title = document.getElementById('pushTitle')?.value || 'MichiNo-';
+  const body  = document.getElementById('pushBody')?.value  || '';
+  if (!('Notification' in window)) { alert('Notifications non supportées sur ce navigateur'); return; }
+  if (Notification.permission === 'granted') {
+    new Notification(title, { body, icon: '/icons/icon-192.png' });
+  } else {
+    Notification.requestPermission().then(p => {
+      if (p === 'granted') new Notification(title, { body, icon: '/icons/icon-192.png' });
+    });
+  }
+}
+
+async function sendPushNotif() {
+  const t     = localStorage.getItem('michino_token');
+  const title = document.getElementById('pushTitle')?.value.trim();
+  const body  = document.getElementById('pushBody')?.value.trim();
+  const url   = document.getElementById('pushUrl')?.value.trim() || '/';
+  if (!title || !body) { showAlert('pushAlert', 'Titre et message requis', 'error'); return; }
+  try {
+    const res  = await fetch('/api/admin/push-notify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + t },
+      body: JSON.stringify({ title, body, url }),
+    });
+    const data = await res.json();
+    const pr = document.getElementById('pushResult');
+    if (pr) { pr.style.display = 'block'; pr.textContent = `✅ Notification envoyée à ${data.subscribers || 0} appareils`; setTimeout(()=>pr.style.display='none', 4000); }
+  } catch { showAlert('pushAlert', 'Erreur envoi', 'error'); }
+}
+
+// ── Override showPage final ───────────────────────────────────
+const _origShowPageAll = showPage;
+showPage = function(page) {
+  _origShowPageAll(page);
+  if (page === 'subscribers')     loadSubscribers();
+  if (page === 'comments-admin')  loadAdminComments();
+  if (page === 'push-admin')      loadPushAdmin();
+};
+
+// Charger badge abonnés au démarrage
+if (localStorage.getItem('michino_token')) {
+  setTimeout(loadSubscribers, 2000);
+}
+
+// Start chat polling after login
+const _origLoadAdmin = window.loadAdminData;
+window.loadAdminData = function() {
+  if (_origLoadAdmin) _origLoadAdmin();
+  startChatPolling();
+  patchManageRender();
+};
+// Also start immediately if already logged in
+if (localStorage.getItem('michino_token')) {
+  startChatPolling();
+  setTimeout(patchManageRender, 1000);
+}
+
+</script>
+
+<script>
+// ════════════════════════════════════════════════════════════
+//  ADMIN v14 : Newsletter · Push Notifs · Recherche Gérer
+// ════════════════════════════════════════════════════════════
+
+// ── Newsletter admin ──────────────────────────────────────────
+async function loadNewsletterStats() {
+  const token = localStorage.getItem('michino_token');
+  if (!token) return;
+  try {
+    const data = await fetch('/api/notifications/email-list', {
+      headers: { Authorization: 'Bearer ' + token }
+    }).then(r => r.json());
+    const el = document.getElementById('nlAdminCount');
+    if (el) el.textContent = data.total + ' abonné(s)';
+    const list = document.getElementById('nlAdminList');
+    if (list && data.subscribers) {
+      list.innerHTML = data.subscribers.slice(0, 30).map(function(s) {
+        return '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:.85rem">' +
+          '<div><strong>' + (s.name||'–') + '</strong> <span style="color:var(--muted)">' + s.email + '</span></div>' +
+          '<div style="color:var(--muted);font-size:.75rem">' + new Date(s.createdAt).toLocaleDateString('fr') + '</div>' +
+        '</div>';
+      }).join('');
+    }
+  } catch(e) {}
+}
+
+// ── Push admin ────────────────────────────────────────────────
+async function loadPushStats() {
+  const token = localStorage.getItem('michino_token');
+  if (!token) return;
+  try {
+    const data = await fetch('/api/notifications/stats', {
+      headers: { Authorization: 'Bearer ' + token }
+    }).then(r => r.json());
+    const el = document.getElementById('pushAdminCount');
+    if (el) el.textContent = data.subscribers + ' abonné(s) push';
+  } catch(e) {}
+}
+
+async function sendPushNotification() {
+  const token = localStorage.getItem('michino_token');
+  const title = (document.getElementById('pushTitle') || {}).value || '';
+  const body  = (document.getElementById('pushBody')  || {}).value || '';
+  const url   = (document.getElementById('pushUrl')   || {}).value || '/';
+  if (!title || !body) { alert('Titre et message obligatoires'); return; }
+  try {
+    const res  = await fetch('/api/notifications/push/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+      body: JSON.stringify({ title: title, body: body, url: url }),
+    });
+    const data = await res.json();
+    showAdminToast(data.message || '✅ Envoyé !');
+  } catch(e) { showAdminToast('❌ Erreur envoi'); }
+}
+
+// ── Recherche dans la page Gérer ──────────────────────────────
+var _manageFilter = '';
+
+function filterManageItems(query) {
+  _manageFilter = query.toLowerCase();
+  document.querySelectorAll('.manage-song-row, .manage-video-row').forEach(function(row) {
+    var text = row.textContent.toLowerCase();
+    row.style.display = (!_manageFilter || text.includes(_manageFilter)) ? '' : 'none';
+  });
+}
+
+// ── Inject notification page into admin ───────────────────────
+function injectNotifPage() {
+  if (document.getElementById('page-notif')) return;
+  const mainContent = document.querySelector('.main-content');
+  if (!mainContent) return;
+
+  const page = document.createElement('div');
+  page.id = 'page-notif';
+  page.style.display = 'none';
+  page.innerHTML = '<div class="page-title">🔔 Notifications & Newsletter</div>' +
+
+    // Push stats + send
+    '<div class="panel" style="margin-bottom:20px">' +
+      '<div class="panel-title">📱 Notifications Push</div>' +
+      '<div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">' +
+        '<div style="font-family:\'Bebas Neue\',cursive;font-size:2rem;color:var(--accent2)" id="pushAdminCount">–</div>' +
+      '</div>' +
+      '<div style="display:flex;flex-direction:column;gap:10px">' +
+        '<div class="form-group" style="margin:0"><label>Titre *</label><input id="pushTitle" placeholder="Ex: Nouveau son de Burna Boy disponible !"></div>' +
+        '<div class="form-group" style="margin:0"><label>Message *</label><input id="pushBody" placeholder="Ex: Télécharge maintenant sur MichiNo-"></div>' +
+        '<div class="form-group" style="margin:0"><label>URL cible</label><input id="pushUrl" value="/" placeholder="/"></div>' +
+        '<button class="btn" style="max-width:240px" onclick="sendPushNotification()">📤 Envoyer la notification</button>' +
+        '<p style="color:var(--muted);font-size:.8rem">Nécessite VAPID_PUBLIC_KEY et VAPID_PRIVATE_KEY dans .env + npm install web-push</p>' +
+      '</div>' +
+    '</div>' +
+
+    // Newsletter
+    '<div class="panel">' +
+      '<div class="panel-title">📧 Abonnés Newsletter <span id="nlAdminCount" style="color:var(--muted);font-size:.85rem;font-weight:400">–</span></div>' +
+      '<div id="nlAdminList" style="max-height:400px;overflow-y:auto"></div>' +
+    '</div>';
+
+  mainContent.appendChild(page);
+}
+
+// ── Inject search bar into manage page ───────────────────────
+function injectManageSearch() {
+  const el = document.getElementById('page-manage');
+  if (!el || el.querySelector('.manage-search')) return;
+  const bar = document.createElement('div');
+  bar.innerHTML = '<div class="manage-search" style="margin-bottom:16px"><input placeholder="🔍 Rechercher par titre, artiste..." oninput="filterManageItems(this.value)" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-family:\'Rajdhani\',sans-serif;font-size:1rem;outline:none" onfocus="this.style.borderColor=\'var(--accent)\'" onblur="this.style.borderColor=\'var(--border)\'"></div>';
+  el.insertBefore(bar, el.firstChild.nextSibling);
+}
+
+// ── Patch showPage to load notif page ────────────────────────
+const _origShowPageV14 = showPage;
+showPage = function(page) {
+  _origShowPageV14(page);
+  if (page === 'notif') {
+    injectNotifPage();
+    const p = document.getElementById('page-notif');
+    if (p) { p.style.display = ''; }
+    // Hide others
+    ['home','music','videos','imagegen','theme','chat','manage','analytics','audit','seo'].forEach(function(id) {
+      const el = document.getElementById('page-' + id);
+      if (el) el.style.display = 'none';
+    });
+    loadPushStats();
+    loadNewsletterStats();
+    document.querySelectorAll('.menu-item').forEach(function(el) {
+      el.classList.toggle('active', (el.getAttribute('onclick')||'').includes("'notif'"));
+    });
+  }
+  if (page === 'manage') setTimeout(injectManageSearch, 300);
+};
+
+// ── Add Notifications menu item ──────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+  // Find Analytics menu item and insert Notifications after it
+  const auditItem = document.getElementById('page-audit');
+  const sidebar   = document.querySelector('.sidebar-menu');
+  if (sidebar && !sidebar.querySelector('[data-page="notif"]')) {
+    const menuItems = sidebar.querySelectorAll('.menu-item');
+    let auditMenu = null;
+    menuItems.forEach(function(item) {
+      if ((item.getAttribute('onclick')||'').includes("'audit'")) auditMenu = item;
+    });
+    if (auditMenu) {
+      const notifItem = document.createElement('div');
+      notifItem.className = 'menu-item';
+      notifItem.setAttribute('data-page', 'notif');
+      notifItem.setAttribute('onclick', "showPage('notif')");
+      notifItem.innerHTML = '<span class="icon">🔔</span> Notifications';
+      auditMenu.parentNode.insertBefore(notifItem, auditMenu.nextSibling);
+    }
+  }
+});
+</script>
+
+</body>
+</html>
