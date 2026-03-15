@@ -235,9 +235,16 @@ const validateJWT = (req, res, next) => {
 // 12. ANTI PROTOTYPE POLLUTION
 // ─────────────────────────────────────────────
 const preventPrototypePollution = (req, res, next) => {
+  // Uniquement sur les requêtes avec body JSON (POST/PUT/PATCH)
+  // Les GET simples n'ont pas de body — évite les faux positifs Render health checks
+  const hasBody = req.body && typeof req.body === 'object' && Object.keys(req.body).length > 0;
+  const hasQuery = req.query && typeof req.query === 'object' && Object.keys(req.query).length > 0;
+  if (!hasBody && !hasQuery) return next();
+
   const checkObj = (obj) => {
     if (obj && typeof obj === 'object') {
-      if ('__proto__' in obj || 'constructor' in obj || 'prototype' in obj) return true;
+      const keys = Object.keys(obj);
+      if (keys.includes('__proto__') || keys.includes('constructor') || keys.includes('prototype')) return true;
       return Object.values(obj).some(v => typeof v === 'object' && v !== null && checkObj(v));
     }
     return false;
@@ -268,3 +275,4 @@ module.exports = {
   securityLogger, preventPathTraversal, requestSizeLimits, validateJWT,
   preventPrototypePollution, blockMaliciousBots,
 };
+  
