@@ -1,0 +1,493 @@
+/*
+ * ╔═══════════════════════════════════════════════════════════════╗
+ * ║  MichiNo- — THEME LAYER v1.0                                 ║
+ * ║  Inspiré du design du ZIP (shadcn/Tailwind)                  ║
+ * ║  Intégration dans v16 vanilla JS/HTML/CSS                    ║
+ * ║  Ajouter dans index.html juste avant </head> :               ║
+ * ║  <link rel="stylesheet" href="/css/theme.css">               ║
+ * ╚═══════════════════════════════════════════════════════════════╝
+ */
+
+/* ══════════════════════════════════════════════════════════
+   1. SCROLLBAR CUSTOM (style ZIP)
+══════════════════════════════════════════════════════════ */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: #2a2a35;
+  border-radius: 4px;
+  transition: background .2s;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+/* ══════════════════════════════════════════════════════════
+   2. GRAIN OVERLAY — texture subtile sur tout le body
+══════════════════════════════════════════════════════════ */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9998;
+  opacity: 0.35;
+}
+
+/* ══════════════════════════════════════════════════════════
+   3. HEADER — glass morphism amélioré
+══════════════════════════════════════════════════════════ */
+header {
+  background: rgba(7, 7, 7, 0.92) !important;
+  backdrop-filter: blur(28px) !important;
+  -webkit-backdrop-filter: blur(28px) !important;
+  border-bottom: 1px solid rgba(255, 62, 0, 0.12) !important;
+  transition: background .3s;
+}
+
+/* Ligne accent subtile sous le header */
+header::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--accent) 30%, var(--accent2) 70%, transparent 100%);
+  opacity: 0.4;
+}
+
+/* ══════════════════════════════════════════════════════════
+   4. SONG CARDS — hover neon + glass
+══════════════════════════════════════════════════════════ */
+@media (hover: hover) and (pointer: fine) {
+  .song-card:hover {
+    transform: translateY(-6px) !important;
+    border-color: rgba(255, 62, 0, 0.55) !important;
+    box-shadow:
+      0 12px 40px rgba(0, 0, 0, 0.55),
+      0 0 0 1px rgba(255, 62, 0, 0.12),
+      0 0 24px rgba(255, 62, 0, 0.12) !important;
+  }
+}
+
+/* Card playing — glow pulsant */
+.song-card.playing {
+  border-color: var(--accent) !important;
+  box-shadow:
+    0 0 0 2px rgba(255, 62, 0, 0.3),
+    0 0 20px rgba(255, 62, 0, 0.15) !important;
+  animation: card-pulse 2.5s ease-in-out infinite;
+}
+@keyframes card-pulse {
+  0%, 100% { box-shadow: 0 0 0 2px rgba(255,62,0,.3), 0 0 20px rgba(255,62,0,.15); }
+  50%       { box-shadow: 0 0 0 2px rgba(255,62,0,.5), 0 0 32px rgba(255,62,0,.3); }
+}
+
+/* Play overlay — plus sombre et net */
+.play-overlay {
+  background: rgba(0, 0, 0, 0.5) !important;
+  backdrop-filter: blur(2px);
+}
+
+/* Play circle — neon glow */
+.play-circle {
+  box-shadow:
+    0 4px 24px rgba(255, 62, 0, 0.7),
+    0 0 0 6px rgba(255, 62, 0, 0.12) !important;
+  transition: transform .15s, box-shadow .15s;
+}
+.song-card:active .play-circle {
+  transform: scale(0.92);
+}
+
+/* ══════════════════════════════════════════════════════════
+   5. BTN-DL — effet shine du ZIP
+══════════════════════════════════════════════════════════ */
+.btn-dl {
+  position: relative;
+  overflow: hidden;
+}
+.btn-dl::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.18),
+    transparent
+  );
+  transition: transform 0s;
+}
+@media (hover: hover) and (pointer: fine) {
+  .btn-dl:hover::after {
+    transform: translateX(100%);
+    transition: transform 0.45s ease;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════
+   6. BTN-SHARE — style propre
+══════════════════════════════════════════════════════════ */
+.btn-share {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  transition: all .18s !important;
+}
+.btn-share:hover {
+  background: rgba(255, 62, 0, 0.12) !important;
+  border-color: rgba(255, 62, 0, 0.3) !important;
+  color: var(--accent) !important;
+}
+
+/* ══════════════════════════════════════════════════════════
+   7. VIDEO CARDS — hover amélioré
+══════════════════════════════════════════════════════════ */
+@media (hover: hover) and (pointer: fine) {
+  .video-card:hover {
+    transform: translateY(-5px) !important;
+    border-color: rgba(255, 62, 0, 0.5) !important;
+    box-shadow:
+      0 16px 48px rgba(0, 0, 0, 0.6),
+      0 0 24px rgba(255, 62, 0, 0.1) !important;
+  }
+}
+
+/* Video play btn — neon glow */
+.video-play-btn {
+  box-shadow:
+    0 4px 28px rgba(255, 62, 0, 0.7),
+    0 0 0 8px rgba(255, 62, 0, 0.1) !important;
+  transition: transform .15s, box-shadow .15s;
+}
+.video-card:active .video-play-btn {
+  transform: scale(0.9);
+}
+
+/* ══════════════════════════════════════════════════════════
+   8. RÉACTIONS EMOJI — style ZIP amélioré
+══════════════════════════════════════════════════════════ */
+.reaction-bar {
+  background: rgba(255, 255, 255, 0.02);
+  border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+  padding: 7px 11px 9px !important;
+  gap: 5px !important;
+}
+
+.reaction-btn {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.07) !important;
+  border-radius: 20px !important;
+  transition: all .2s !important;
+  backdrop-filter: blur(4px);
+  font-size: .82rem !important;
+}
+.reaction-btn:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  transform: scale(1.05);
+}
+.reaction-btn.reacted {
+  background: rgba(255, 62, 0, 0.18) !important;
+  border-color: rgba(255, 62, 0, 0.4) !important;
+  color: var(--accent2) !important;
+  box-shadow: 0 0 12px rgba(255, 62, 0, 0.15);
+}
+.reaction-btn:active {
+  transform: scale(0.95) !important;
+}
+
+/* Emoji flottant plus grand et plus fluide */
+.floating-emoji {
+  font-size: 2rem !important;
+  filter: drop-shadow(0 0 8px rgba(255, 62, 0, 0.5));
+}
+
+/* ══════════════════════════════════════════════════════════
+   9. PLAYER — glass + ligne dégradée + transitions
+══════════════════════════════════════════════════════════ */
+.player {
+  background: rgba(7, 7, 7, 0.97) !important;
+  backdrop-filter: blur(32px) !important;
+  -webkit-backdrop-filter: blur(32px) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+  box-shadow: 0 -4px 40px rgba(0, 0, 0, 0.6);
+}
+
+/* Ligne dégradée en haut du player */
+.player::before {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--now-color, var(--accent)) 25%,
+    var(--now-color2, var(--accent2)) 75%,
+    transparent 100%
+  ) !important;
+  opacity: 0.8;
+  transition: background 1s ease;
+}
+
+/* Boutons player — hover plus net */
+.p-btn {
+  transition: color .15s, background .15s, transform .1s !important;
+  border-radius: 50% !important;
+}
+.p-btn:active { transform: scale(0.88) !important; }
+.p-btn.play {
+  box-shadow: 0 4px 20px rgba(255, 62, 0, 0.45) !important;
+  transition: background .15s, transform .1s, box-shadow .15s !important;
+}
+.p-btn.play:hover {
+  box-shadow: 0 4px 28px rgba(255, 62, 0, 0.65) !important;
+}
+.p-btn.play:active {
+  transform: scale(0.90) !important;
+}
+
+/* Progress bar — track plus visible */
+.progress-track {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-radius: 4px !important;
+}
+.progress-fill {
+  border-radius: 4px !important;
+  box-shadow: 0 0 8px rgba(255, 62, 0, 0.4);
+}
+
+/* Volume slider — track arrondie */
+.vol-slider {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-radius: 4px !important;
+  height: 4px !important;
+}
+.vol-slider::-webkit-slider-thumb {
+  background: #fff !important;
+  box-shadow: 0 0 6px rgba(255, 62, 0, 0.3);
+  transition: background .15s, transform .15s;
+}
+.vol-slider::-webkit-slider-thumb:hover {
+  background: var(--accent) !important;
+  transform: scale(1.2);
+}
+
+/* ══════════════════════════════════════════════════════════
+   10. FULLSCREEN PLAYER — améliorations
+══════════════════════════════════════════════════════════ */
+.fullscreen-player {
+  backdrop-filter: blur(40px) !important;
+}
+
+/* Pochette vinyle — glow plus intense */
+.fs-vinyl {
+  box-shadow:
+    0 0 0 4px #222,
+    0 0 0 8px #111,
+    0 0 80px var(--now-glow, rgba(255,62,0,.35)),
+    0 24px 80px rgba(0, 0, 0, 0.7) !important;
+}
+
+/* ══════════════════════════════════════════════════════════
+   11. MODALS — animation d'entrée + glass
+══════════════════════════════════════════════════════════ */
+.modal {
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+}
+.modal-box {
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255,62,0,.08) !important;
+}
+.modal-close:hover {
+  background: var(--accent) !important;
+  color: #fff !important;
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 12px rgba(255, 62, 0, 0.4);
+}
+
+/* ══════════════════════════════════════════════════════════
+   12. SKELETONS — animation plus fluide
+══════════════════════════════════════════════════════════ */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--surface2) 25%,
+    rgba(255, 62, 0, 0.04) 50%,
+    var(--surface2) 75%
+  ) !important;
+  background-size: 200% 100% !important;
+  animation: shimmer-new 1.6s ease infinite !important;
+}
+@keyframes shimmer-new {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ══════════════════════════════════════════════════════════
+   13. GENRE PILLS — hover amélioré
+══════════════════════════════════════════════════════════ */
+.genre-pill {
+  transition: all .2s !important;
+}
+.genre-pill:hover {
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
+  background: rgba(255, 62, 0, 0.08) !important;
+}
+.genre-pill.active {
+  background: var(--accent) !important;
+  border-color: var(--accent) !important;
+  color: #fff !important;
+  box-shadow: 0 0 16px rgba(255, 62, 0, 0.35) !important;
+}
+
+/* ══════════════════════════════════════════════════════════
+   14. TOAST — glass
+══════════════════════════════════════════════════════════ */
+.toast {
+  backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* ══════════════════════════════════════════════════════════
+   15. SEARCH INPUT — focus amélioré
+══════════════════════════════════════════════════════════ */
+#searchInput:focus {
+  border-color: var(--accent) !important;
+  background: rgba(255, 62, 0, 0.05) !important;
+  box-shadow: 0 0 0 3px rgba(255, 62, 0, 0.12) !important;
+}
+
+/* ══════════════════════════════════════════════════════════
+   16. NAV TABS — underline animé style ZIP
+══════════════════════════════════════════════════════════ */
+.nav-tab {
+  position: relative;
+  overflow: hidden;
+  transition: color .2s !important;
+}
+.nav-tab::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  right: 50%;
+  height: 2px;
+  background: var(--accent);
+  transition: left .25s ease, right .25s ease;
+  border-radius: 2px;
+}
+.nav-tab.active::after,
+.nav-tab:hover::after {
+  left: 0;
+  right: 0;
+}
+
+/* ══════════════════════════════════════════════════════════
+   17. MOBILE TABS — indicateur actif amélioré
+══════════════════════════════════════════════════════════ */
+.mobile-tab.active {
+  color: var(--accent) !important;
+  text-shadow: 0 0 12px rgba(255, 62, 0, 0.5);
+}
+
+/* ══════════════════════════════════════════════════════════
+   18. CHAT — glass window
+══════════════════════════════════════════════════════════ */
+.chat-window {
+  background: rgba(16, 16, 16, 0.97) !important;
+  backdrop-filter: blur(24px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 16px 60px rgba(0, 0, 0, 0.85) !important;
+}
+
+/* ══════════════════════════════════════════════════════════
+   19. CARD INFO — transitions texte
+══════════════════════════════════════════════════════════ */
+.card-title {
+  transition: color .18s;
+}
+.song-card:hover .card-title {
+  color: var(--text) !important;
+}
+
+/* Genre tag — style pill du ZIP */
+.genre-tag {
+  background: rgba(255, 140, 0, 0.14) !important;
+  border: 1px solid rgba(255, 140, 0, 0.2);
+  transition: all .18s;
+}
+.song-card:hover .genre-tag {
+  background: rgba(255, 140, 0, 0.22) !important;
+  border-color: rgba(255, 140, 0, 0.4);
+}
+
+/* ══════════════════════════════════════════════════════════
+   20. SECTION TITLE — accent gauche style ZIP
+══════════════════════════════════════════════════════════ */
+.section-title {
+  position: relative;
+  padding-left: 12px;
+}
+.section-title::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 70%;
+  background: linear-gradient(to bottom, var(--accent), var(--accent2));
+  border-radius: 2px;
+}
+
+/* ══════════════════════════════════════════════════════════
+   21. QUEUE / PLAYLIST PANEL — glass
+══════════════════════════════════════════════════════════ */
+.queue-panel {
+  background: rgba(12, 12, 12, 0.98) !important;
+  backdrop-filter: blur(28px) !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.07) !important;
+}
+
+/* ══════════════════════════════════════════════════════════
+   22. FADE UP — animation d'apparition des cards
+══════════════════════════════════════════════════════════ */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════
+   23. FOCUS VISIBLE — accessibilité
+══════════════════════════════════════════════════════════ */
+:focus-visible {
+  outline: 2px solid var(--accent) !important;
+  outline-offset: 3px;
+}
+button:focus-visible {
+  outline: 2px solid var(--accent) !important;
+  outline-offset: 2px;
+}
+
+/* ══════════════════════════════════════════════════════════
+   24. SELECTION — couleur accent
+══════════════════════════════════════════════════════════ */
+::selection {
+  background: rgba(255, 62, 0, 0.3);
+  color: var(--text);
+}
